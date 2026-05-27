@@ -1,0 +1,37 @@
+project_name: industrial-rag-assistant
+version: "1.0.0"
+
+data:
+  raw_dir: data/raw
+  processed_dir: data/processed
+  chunk_size: 256
+  chunk_overlap: 50
+
+embedding:
+  model_name: BAAI/bge-small-en-v1.5
+  batch_size: 32
+
+llm:
+  model: mistral:7b-instruct
+  base_url: http://localhost:11434
+  temperature: 0.1
+  max_tokens: 1024
+
+vector_store:
+  host: localhost
+  port: 6333
+  collection_name: industrial_docs
+
+retrieval:
+  similarity_top_k: 6
+  reranker_model: cross-encoder/ms-marco-MiniLM-L-6-v2
+  reranker_top_n: 3
+
+evaluation:
+  faithfulness_threshold: 0.75
+  answer_relevancy_threshold: 0.70
+  context_recall_threshold: 0.65
+
+mlflow:
+  tracking_uri: mlruns
+  experiment_name: rag-experiments

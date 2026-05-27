@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Gestly — Final 6 Fixes → 10/10</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--g:#16A34A;--bg:#030503;--bd:#142014;--t:#d4f0d4;--m:#6b9e6b;--red:#ef4444;--amber:#f59e0b}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t);line-height:1.5;font-size:14px}
+.nav{background:rgba(3,5,3,.97);border-bottom:1px solid var(--bd);padding:0 28px;height:54px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}
+.ld{width:22px;height:22px;background:var(--g);border-radius:50%}
+.ln{font-size:15px;font-weight:800;color:#fff}
+.navr{margin-left:auto}
+.nl{font-size:11px;font-weight:700;padding:6px 14px;border-radius:6px;background:var(--g);color:#fff;cursor:pointer;border:none;transition:.14s}
+.nl:hover{background:#15803d}
+.hero{padding:36px 32px 28px;border-bottom:1px solid var(--bd)}
+.hk{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--g);margin-bottom:10px}
+.ht{font-size:28px;font-weight:900;color:#fff;line-height:1.1;margin-bottom:10px;letter-spacing:-.03em}
+.ht .g{color:var(--g)} .ht .a{color:var(--amber)}
+.hs{font-size:13px;color:var(--m);max-width:640px;line-height:1.65;margin-bottom:16px}
+.scores{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px}
+.sc{background:#020402;border:1px solid #0f1a0f;border-radius:8px;padding:12px;text-align:center}
+.sc-n{font-size:22px;font-weight:900;line-height:1}
+.sc-n.red{color:var(--red)}.sc-n.amber{color:var(--amber)}.sc-n.green{color:var(--g)}
+.sc-l{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:#2d4a2d;margin-top:3px}
+.sc-s{font-size:8px;color:#1a2d1a;margin-top:2px}
+.main{max-width:920px;margin:0 auto;padding:28px 32px}
+.tip{border-radius:9px;padding:14px 16px;margin-bottom:12px;font-size:12.5px;line-height:1.65}
+.tip.g{background:rgba(22,163,74,.04);border:1px solid rgba(22,163,74,.12);border-left:3px solid var(--g);color:var(--m)}
+.tip.g strong{color:#fff}
+.tip.a{background:rgba(245,158,11,.04);border:1px solid rgba(245,158,11,.12);border-left:3px solid var(--amber);color:#fcd34d}
+.tip.a strong{color:#fff}
+.tip.r{background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.12);border-left:3px solid var(--red);color:#fca5a5}
+.tip.r strong{color:#fff}
+.pb{margin-bottom:20px}
+.ph{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#020402;border-radius:10px 10px 0 0;border:1px solid #0f1a0f;border-bottom:none}
+.phl{display:flex;align-items:center;gap:8px}
+.dots{display:flex;gap:4px}
+.pd{width:9px;height:9px;border-radius:50%}
+.pr2{background:#ff5f57}.pa2{background:#febc2e}.pg2{background:#28c840}
+.ptitle{font-size:11px;font-weight:700;color:#1e3a1e;font-family:'JetBrains Mono',monospace}
+.ptag{font-size:9px;font-weight:800;padding:2px 7px;border-radius:4px;letter-spacing:.06em;text-transform:uppercase;margin-left:4px;background:rgba(22,163,74,.15);color:var(--g)}
+.cbtn{font-size:11px;font-weight:700;padding:6px 16px;border-radius:6px;border:1px solid #1a2d1a;background:var(--g);color:#fff;cursor:pointer;transition:.14s}
+.cbtn:hover{background:#15803d}
+.cbtn.ok{background:#166534}
+.pbody{background:#020402;border:1px solid #0f1a0f;border-top:none;border-radius:0 0 10px 10px;padding:22px 24px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.9;color:#6aba6a;white-space:pre-wrap;word-break:break-word;max-height:820px;overflow-y:auto}
+.pbody::-webkit-scrollbar{width:4px}
+.pbody::-webkit-scrollbar-thumb{background:#1a2d1a;border-radius:2px}
+.sec-label{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--m);margin-bottom:12px;margin-top:24px;padding-bottom:6px;border-bottom:1px solid var(--bd)}
+@media(max-width:600px){.scores{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="ld"></div>
+  <span class="ln">Gestly</span>
+  <div class="navr"><button class="nl" onclick="cp()">&#x1F4CB; Copy Prompt</button></div>
+</nav>
+
+<div class="hero">
+  <div class="hk">6.2/10 &rarr; 10/10 &middot; EXACT REMAINING BLOCKERS &middot; FINAL PUSH</div>
+  <div class="ht">Backend: <span class="g">10/10.</span><br>6 blockers <span class="a">remaining.</span><br>Fix them. Ship.</div>
+  <div class="hs">Backend is perfect. Business is 10/10. Product is 9/10. Six specific blockers remain: xlsx vulnerability, secrets in env, :any types at exact line numbers, dark mode, Crisp chat, and 2 more blog posts. This is the final push.</div>
+</div>
+
+<div class="main">
+
+  <div class="scores">
+    <div class="sc"><div class="sc-n green">10</div><div class="sc-l">Backend</div><div class="sc-s">✓ Done</div></div>
+    <div class="sc"><div class="sc-n green">10</div><div class="sc-l">Business</div><div class="sc-s">✓ Done</div></div>
+    <div class="sc"><div class="sc-n green">9</div><div class="sc-l">Product</div><div class="sc-s">✓ Nearly done</div></div>
+    <div class="sc"><div class="sc-n green">8</div><div class="sc-l">Legal</div><div class="sc-s">✓ Done</div></div>
+    <div class="sc"><div class="sc-n red">5</div><div class="sc-l">Security</div><div class="sc-s">xlsx vuln</div></div>
+    <div class="sc"><div class="sc-n red">4</div><div class="sc-l">Frontend</div><div class="sc-s">:any types</div></div>
+    <div class="sc"><div class="sc-n red">3</div><div class="sc-l">UI/UX</div><div class="sc-s">dark mode</div></div>
+    <div class="sc"><div class="sc-n red">0</div><div class="sc-l">Support</div><div class="sc-s">no Crisp</div></div>
+  </div>
+
+  <div class="tip r"><strong>Critical:</strong> npm audit shows 1 critical + 2 high vulnerabilities in xlsx (Prototype Pollution). An attacker uploads a crafted Excel file → takes over your server process. This is the #1 blocker before any CA uploads real data.</div>
+  <div class="tip a"><strong>Remaining :any locations:</strong> reports/page.tsx line 106, dashboard/page.tsx line 81. Previous fix missed these two files. Fix only these two.</div>
+  <div class="tip g"><strong>After this prompt:</strong> Do 3 manual steps yourself — move secrets to Secret Manager, create staging Firebase project, write 2 real blog articles. Everything else is in this prompt.</div>
+
+  <div class="sec-label">&#x25B8; Final Push Prompt — Copy into Antigravity</div>
+
+  <div class="pb">
+    <div class="ph">
+      <div class="phl">
+        <div class="dots"><span class="pd pr2"></span><span class="pd pa2"></span><span class="pd pg2"></span></div>
+        <span class="ptitle">gestly-final-10-of-10.txt</span>
+        <span class="ptag">COPY ENTIRE BLOCK</span>
+      </div>
+      <button class="cbtn" id="copybtn" onclick="cp()">&#x1F4CB; Copy Everything</button>
+    </div>
+    <div class="pbody" id="pb">You are making the final fixes to bring Gestly to launch-ready 10/10. The backend is already rated 10/10. Business is 10/10. Fix only the 6 remaining blockers below. Do not touch anything already working.
+
+HARD CONSTRAINTS:
+- Do NOT change functions/src/reconcileJob.ts — it is perfect
+- Do NOT change lib/reconciliation/engine.ts algorithm
+- Do NOT revert any previously verified fixes
+- Static export compatible
+
+---
+
+FIX 1 (CRITICAL): REPLACE xlsx WITH SECURE ALTERNATIVE
+
+The audit found 1 critical + 2 high npm vulnerabilities in the xlsx package (Prototype Pollution). An attacker uploads a crafted Excel file and takes over the server process. This is the #1 security blocker.
+
+Step 1: Check current xlsx usage:
+  grep -rn "from 'xlsx'\|require('xlsx')\|from \"xlsx\"" lib/ app/ --include="*.ts" --include="*.tsx" 2&gt;/dev/null
+
+Step 2: Replace xlsx with exceljs which has no known critical vulnerabilities:
+  npm uninstall xlsx
+  npm install exceljs
+
+Step 3: Update every file that imports xlsx to use exceljs instead.
+
+The xlsx API vs exceljs API translation:
+
+  OLD (xlsx):
+    import * as XLSX from 'xlsx';
+    const workbook = XLSX.read(buffer, { type: 'buffer' });
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+  NEW (exceljs):
+    import ExcelJS from 'exceljs';
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.load(buffer);
+    const sheet = workbook.worksheets[0];
+    const rows: unknown[][] = [];
+    sheet.eachRow((row) =&gt; {
+      rows.push(row.values as unknown[]);
+    });
+    // Note: exceljs row.values has undefined at index 0, actual data starts at index 1
+    // Filter the first element: rows.map(r =&gt; (r as unknown[]).slice(1))
+
+Update the PR parser (tallyParser.ts or prParser.ts) and GSTR-2B parser to use the new API.
+
+Step 4: After updating parsers, run:
+  npm audit
+  Must show 0 critical and 0 high vulnerabilities related to xlsx.
+
+VERIFY FIX 1:
+  npm audit 2&gt;&amp;1 | grep -E "critical|high" | wc -l
+  Must be 0 OR only unrelated packages (not xlsx).
+  
+  grep -rn "from 'xlsx'\|require('xlsx')" lib/ app/ --include="*.ts" --include="*.tsx" 2&gt;/dev/null | wc -l
+  Must be 0 (no more xlsx imports).
+
+---
+
+FIX 2: MOVE SECRETS TO FIREBASE SECRET MANAGER
+
+The audit found RESEND_API_KEY and WHATSAPP_TOKEN in process.env inside Cloud Functions.
+
+File: functions/src/index.ts
+
+Firebase Functions v2 supports defineSecret() for proper secret management. This is the correct pattern:
+
+Step 1: At the top of functions/src/index.ts, import defineSecret:
+  import { defineSecret } from 'firebase-functions/params';
+
+Step 2: Define the secrets at module level (outside any function):
+  const resendApiKey = defineSecret('RESEND_API_KEY');
+  const whatsappToken = defineSecret('WHATSAPP_TOKEN');
+  const razorpayWebhookSecret = defineSecret('RAZORPAY_WEBHOOK_SECRET');
+
+Step 3: In each Cloud Function that uses these secrets, add them to the runWith secrets array:
+
+  // For onCall functions:
+  export const sendEmail = onCall(
+    { secrets: [resendApiKey], region: 'asia-south1' },
+    async (request) =&gt; {
+      const apiKey = resendApiKey.value();
+      // use apiKey instead of process.env.RESEND_API_KEY
+    }
+  );
+
+  // For onRequest functions (webhooks):
+  export const razorpayWebhook = onRequest(
+    { secrets: [razorpayWebhookSecret], region: 'asia-south1' },
+    async (req, res) =&gt; {
+      const secret = razorpayWebhookSecret.value();
+      // use secret instead of process.env.RAZORPAY_WEBHOOK_SECRET
+    }
+  );
+
+Step 4: Add the secrets to Firebase:
+  firebase functions:secrets:set RESEND_API_KEY
+  firebase functions:secrets:set WHATSAPP_TOKEN
+  firebase functions:secrets:set RAZORPAY_WEBHOOK_SECRET
+  (Firebase will prompt for the value securely)
+
+Step 5: Build and deploy:
+  cd functions &amp;&amp; npm run build 2&gt;&amp;1 | tail -5
+  firebase deploy --only functions --project gst-saas-9cdfc
+
+VERIFY FIX 2:
+  grep -n "process\.env\.RESEND\|process\.env\.WHATSAPP\|process\.env\.RAZORPAY_WEBHOOK" functions/src/index.ts | grep -v "//"
+  Must return ZERO results (no more process.env for secrets).
+  
+  grep -n "defineSecret\|resendApiKey\|whatsappToken" functions/src/index.ts | wc -l
+  Must be &gt;= 3.
+
+---
+
+FIX 3: REMOVE :any FROM EXACT LOCATIONS
+
+The audit identified :any at exactly these locations:
+  - app/(app)/reports/page.tsx line 106
+  - app/(app)/dashboard/page.tsx line 81
+
+Read line 106 of reports/page.tsx. Find the :any type. Replace with the correct type.
+
+Common patterns and their fixes:
+
+  If it is: const data = snap.data() as any
+  Fix to:   const data = snap.data() as AuditReport
+
+  If it is: (report: any) => ...
+  Fix to:   (report: AuditReport) => ...
+
+  If it is: useState&lt;any&gt;(null)
+  Fix to:   useState&lt;AuditReport | null&gt;(null)
+
+Define the AuditReport interface at the top of reports/page.tsx if it doesn't exist:
+  interface AuditReport {
+    id: string;
+    orgId: string;
+    gstinId: string;
+    period: string;
+    periodDisplay?: string;
+    reportType: string;
+    generatedBy: string;
+    generatedAt: { toMillis?: () =&gt; number; toDate?: () =&gt; Date } | Date;
+    fileName: string;
+    downloadUrl?: string;
+    status: 'completed' | 'failed' | 'pending';
+    runId?: string;
+  }
+
+Read line 81 of dashboard/page.tsx. Find the :any type. Replace with:
+  interface DashboardRun {
+    id: string;
+    orgId: string;
+    gstinId: string;
+    period: string;
+    status: 'completed' | 'failed' | 'processing';
+    matchedCount: number;
+    mismatchCount: number;
+    missingIn2B: number;
+    maxItcClaimable: number;
+    createdAt: { toMillis?: () =&gt; number };
+  }
+
+After fixing: run the full any check:
+  grep -rn ": any\|as any\|&lt;any&gt;" app/(app)/reports/page.tsx app/(app)/dashboard/page.tsx 2&gt;/dev/null | grep -v "//"
+  Must return ZERO results.
+
+VERIFY FIX 3:
+  npx tsc --noEmit 2&gt;&amp;1 | grep "reports\|dashboard" | grep "error TS" | wc -l
+  Must be 0.
+
+---
+
+FIX 4: ADD DARK MODE
+
+The audit rated UI/UX 3/10. "No dark mode in 2026 is a design failure."
+
+File: app/globals.css
+
+Add dark mode CSS variables using the prefers-color-scheme media query.
+Also add a data-theme attribute approach so the user can toggle manually.
+
+Step 1: In globals.css, add after the existing :root variables:
+
+  /* Dark mode via system preference */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-primary: #0a0f0a;
+      --bg-secondary: #111811;
+      --bg-card: #151c15;
+      --border-color: #1f2f1f;
+      --text-primary: #f0fdf0;
+      --text-secondary: #6b9e6b;
+      --text-muted: #2d4a2d;
+    }
+  }
+
+  /* Dark mode via manual toggle (data-theme="dark" on html element) */
+  [data-theme="dark"] {
+    --bg-primary: #0a0f0a;
+    --bg-secondary: #111811;
+    --bg-card: #151c15;
+    --border-color: #1f2f1f;
+    --text-primary: #f0fdf0;
+    --text-secondary: #6b9e6b;
+    --text-muted: #2d4a2d;
+  }
+
+Step 2: Create a DarkModeToggle component:
+  File: components/DarkModeToggle.tsx
+
+  'use client';
+  import { useState, useEffect } from 'react';
+  import { Moon, Sun } from 'lucide-react';
+
+  export function DarkModeToggle() {
+    const [dark, setDark] = useState(false);
+
+    useEffect(() =&gt; {
+      // Check system preference and saved preference
+      const saved = localStorage.getItem('gestly_theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const isDark = saved === 'dark' || (!saved &amp;&amp; prefersDark);
+      setDark(isDark);
+      document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    }, []);
+
+    const toggle = () =&gt; {
+      const next = !dark;
+      setDark(next);
+      document.documentElement.setAttribute('data-theme', next ? 'dark' : 'light');
+      localStorage.setItem('gestly_theme', next ? 'dark' : 'light');
+    };
+
+    return (
+      &lt;button
+        onClick={toggle}
+        className="p-2 rounded-lg text-gray-500 hover:text-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+      &gt;
+        {dark ? &lt;Sun className="w-4 h-4" /&gt; : &lt;Moon className="w-4 h-4" /&gt;}
+      &lt;/button&gt;
+    );
+  }
+
+Step 3: Add DarkModeToggle to the app header in app/(app)/layout.tsx next to the existing header buttons.
+
+Step 4: Apply dark mode classes to the key app screen containers.
+In the main layout wrapper div, add: className="bg-white dark:bg-[#0a0f0a] text-gray-900 dark:text-gray-100"
+In sidebar: className="bg-white dark:bg-[#111811] border-r border-gray-100 dark:border-[#1f2f1f]"
+In cards: className="bg-white dark:bg-[#151c15] border border-gray-100 dark:border-[#1f2f1f]"
+
+VERIFY FIX 4:
+  grep -n "prefers-color-scheme\|data-theme\|dark:" app/globals.css components/DarkModeToggle.tsx 2&gt;/dev/null | wc -l
+  Must be &gt;= 5.
+
+---
+
+FIX 5: ADD CRISP LIVE CHAT
+
+The audit gave support 0/10. "Cannot launch professional SaaS without support tool."
+
+Step 1: Create components/CrispChat.tsx (if it does not already exist from the previous prompt):
+  Check: ls components/CrispChat.tsx 2&gt;/dev/null
+
+  If it does not exist, create it:
+
+  'use client';
+  import { useEffect } from 'react';
+
+  declare global {
+    interface Window {
+      $crisp: unknown[];
+      CRISP_WEBSITE_ID: string;
+    }
+  }
+
+  export function CrispChat() {
+    useEffect(() =&gt; {
+      const websiteId = process.env.NEXT_PUBLIC_CRISP_WEBSITE_ID;
+      if (!websiteId || websiteId === 'YOUR_CRISP_WEBSITE_ID') return;
+      
+      window.$crisp = [];
+      window.CRISP_WEBSITE_ID = websiteId;
+      
+      const script = document.createElement('script');
+      script.src = 'https://client.crisp.chat/l.js';
+      script.async = true;
+      document.head.appendChild(script);
+      
+      return () =&gt; {
+        // Cleanup on unmount
+        const existingScript = document.querySelector('script[src="https://client.crisp.chat/l.js"]');
+        if (existingScript) existingScript.remove();
+      };
+    }, []);
+    
+    return null;
+  }
+
+Step 2: Import and add to app/(app)/layout.tsx:
+  import { CrispChat } from '@/components/CrispChat';
+  // Add inside the layout return, before closing tag:
+  &lt;CrispChat /&gt;
+
+Step 3: Add to .env.local if not already there:
+  NEXT_PUBLIC_CRISP_WEBSITE_ID=YOUR_CRISP_WEBSITE_ID
+
+Step 4: Create a basic Help Center page at app/help/page.tsx:
+
+  export default function HelpPage() {
+    return (
+      &lt;div className="max-w-3xl mx-auto px-6 py-16"&gt;
+        &lt;h1 className="text-3xl font-bold mb-2"&gt;Help Center&lt;/h1&gt;
+        &lt;p className="text-gray-500 mb-10"&gt;Common questions and guides for Gestly users&lt;/p&gt;
+        
+        {[
+          {
+            q: "How do I export my Purchase Register from Tally?",
+            a: "In Tally Prime: Go to Display &gt; Account Books &gt; Purchase Register. Press Alt+E to export. Select Excel format. Set the date range to the GST period (e.g., 1 Apr to 31 Mar). Save the file and upload to Gestly."
+          },
+          {
+            q: "How do I download GSTR-2B from the GST Portal?",
+            a: "Log in at gstin.gov.in. Go to Returns &gt; Return Dashboard. Select the financial year and tax period. Click on GSTR-2B. Click Download (JSON or Excel). Upload the Excel file to Gestly."
+          },
+          {
+            q: "Why does my invoice show as MISSING IN 2B?",
+            a: "This means the invoice is in your Purchase Register but your supplier has not filed it in their GSTR-1. Use the Notify Supplier button to send them a professional reminder. Until they file, you cannot claim ITC on this invoice."
+          },
+          {
+            q: "What is Section 17(5) blocked credit?",
+            a: "Section 17(5) of the CGST Act blocks ITC on certain items — motor vehicles, food, club memberships, and personal consumption goods. Gestly auto-detects these based on HSN codes. Consult your CA before finalizing."
+          },
+          {
+            q: "Can I reconcile multiple GSTINs?",
+            a: "Yes. Go to GSTIN Manager and add additional GSTINs for your organization. Switch between them using the Active GSTIN dropdown in the sidebar. Each GSTIN has its own reconciliation history."
+          },
+          {
+            q: "How accurate is the matching?",
+            a: "Gestly uses exact matching for GSTIN + invoice number, and fuzzy matching (Levenshtein algorithm) for minor formatting differences like INV/001 vs INV-001. All results should be verified by your CA before filing."
+          },
+        ].map(({ q, a }) =&gt; (
+          &lt;div key={q} className="mb-8 pb-8 border-b border-gray-100 last:border-0"&gt;
+            &lt;h3 className="font-semibold text-gray-800 mb-2"&gt;{q}&lt;/h3&gt;
+            &lt;p className="text-gray-600 text-sm leading-relaxed"&gt;{a}&lt;/p&gt;
+          &lt;/div&gt;
+        ))}
+        
+        &lt;div className="mt-12 p-6 bg-green-50 rounded-xl text-center"&gt;
+          &lt;p className="font-semibold text-gray-800 mb-1"&gt;Still need help?&lt;/p&gt;
+          &lt;p className="text-sm text-gray-500"&gt;Use the chat widget (bottom right) or email support@gestly.in&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    );
+  }
+
+Step 5: Add Help Center link to the sidebar navigation in app/(app)/layout.tsx and to the landing page footer.
+
+VERIFY FIX 5:
+  ls components/CrispChat.tsx app/help/page.tsx 2&gt;/dev/null | wc -l
+  Must be 2.
+  grep -n "CrispChat\|help" app/(app)/layout.tsx 2&gt;/dev/null | wc -l
+  Must be &gt;= 1.
+
+---
+
+FIX 6: WRITE 2 MORE BLOG ARTICLES (need 5 total, have 3)
+
+The audit says content/blog has 3 articles. Need 5+ for SEO requirement.
+
+Check existing articles:
+  ls content/blog/ 2&gt;/dev/null
+
+Create 2 new blog articles as MDX or TSX files:
+
+ARTICLE 4: content/blog/gstr-2b-vs-gstr-2a-difference.mdx
+---
+title: "GSTR-2B vs GSTR-2A: Which One to Use for ITC Claims in 2026?"
+description: "Many CAs confuse GSTR-2A and GSTR-2B. This guide explains the difference and why GSTR-2B is mandatory for ITC claims under Rule 36(4)."
+date: "2026-04-15"
+author: "Gestly Tax Team"
+tags: ["GSTR-2B", "ITC", "Rule 36(4)", "GST Compliance"]
+---
+
+# GSTR-2B vs GSTR-2A: Which One Should You Use?
+
+Since January 2022, the GST Council made GSTR-2B the **mandatory basis** for ITC claims under Rule 36(4). Yet many practitioners still use GSTR-2A out of habit. Here's why that's a costly mistake.
+
+## What is GSTR-2A?
+
+GSTR-2A is a **dynamic, auto-populated** statement that updates every time a supplier files their GSTR-1. It reflects real-time supplier filings and changes frequently.
+
+## What is GSTR-2B?
+
+GSTR-2B is a **static, cut-off based** statement generated on the 14th of every month. It shows exactly what ITC is available for a specific tax period and does not change after generation.
+
+## Why GSTR-2B is Now Mandatory
+
+Under Rule 36(4) of the CGST Rules, ITC can only be claimed on invoices that appear in GSTR-2B. Using GSTR-2A for reconciliation will result in:
+- Mismatches with the GST portal
+- Potential notice from GSTIN authorities
+- Excess ITC claims that must be reversed with interest
+
+## How Gestly Uses GSTR-2B
+
+Gestly's reconciliation engine compares your Purchase Register exclusively against GSTR-2B. This ensures every ITC claim is compliant with the latest Rule 36(4) requirements.
+
+[Try Gestly Free →](/demo)
+
+ARTICLE 5: content/blog/section-17-5-blocked-itc-guide.mdx
+---
+title: "Section 17(5) Blocked ITC: Complete Guide for Indian CAs (2026)"
+description: "Section 17(5) of the CGST Act permanently blocks ITC on specific goods and services. This guide lists every blocked category with HSN codes."
+date: "2026-04-22"
+author: "Gestly Tax Team"
+tags: ["Section 17(5)", "Blocked ITC", "HSN Code", "GST"]
+---
+
+# Section 17(5): What ITC is Permanently Blocked?
+
+Section 17(5) of the CGST Act 2017 specifies categories where **Input Tax Credit cannot be claimed**, even if the supplier has correctly filed and the invoice appears in GSTR-2B.
+
+## Blocked Categories Under Section 17(5)
+
+### Motor Vehicles (HSN 8703, 8704, 8711)
+ITC is blocked on motor vehicles used for transportation of persons with seating capacity up to 13 (including driver), **unless** the vehicle is used for:
+- Further supply of such vehicles
+- Transportation of passengers (taxi business)
+- Imparting driving training
+
+### Food, Beverages and Club Memberships
+ITC is blocked on:
+- Food and beverages (outdoor catering)
+- Club memberships and health club fees
+- Beauty treatment services
+
+### Construction and Works Contract (SAC 9954)
+ITC is blocked on construction of immovable property for own use, even if the goods or services are used in the course of business.
+
+## How to Verify 17(5) Blocks
+
+Gestly automatically detects Section 17(5) blocked items using HSN code matching. When a blocked item is detected, it appears with a purple "SEC 17(5) BLOCKED" status and the specific reason.
+
+**Important:** Always verify with your CA before finalizing ITC claims. HSN-based detection is indicative only.
+
+[Check Your ITC for 17(5) Blocks →](/demo)
+
+---
+
+FINAL VERIFICATION
+
+  echo "=== xlsx removed ==="
+  npm audit 2&gt;&amp;1 | grep -E "xlsx" | head -3
+  
+  echo "=== xlsx imports gone ==="
+  grep -rn "from 'xlsx'" lib/ app/ --include="*.ts" --include="*.tsx" 2&gt;/dev/null | wc -l
+
+  echo "=== Secrets use defineSecret ==="
+  grep -c "defineSecret" functions/src/index.ts 2&gt;/dev/null || echo "0"
+
+  echo "=== No process.env secrets ==="
+  grep -n "process\.env\.RESEND\|process\.env\.WHATSAPP" functions/src/index.ts 2&gt;/dev/null | grep -v "//" | wc -l
+
+  echo "=== No :any in reports/dashboard ==="
+  grep -rn ": any\|as any" "app/(app)/reports/page.tsx" "app/(app)/dashboard/page.tsx" 2&gt;/dev/null | grep -v "//" | wc -l
+
+  echo "=== Dark mode ==="
+  grep -c "prefers-color-scheme\|data-theme" app/globals.css 2&gt;/dev/null || echo "0"
+
+  echo "=== Crisp component ==="
+  ls components/CrispChat.tsx 2&gt;/dev/null &amp;&amp; echo "EXISTS" || echo "MISSING"
+
+  echo "=== Help center ==="
+  ls app/help/page.tsx 2&gt;/dev/null &amp;&amp; echo "EXISTS" || echo "MISSING"
+
+  echo "=== Blog articles ==="
+  ls content/blog/ 2&gt;/dev/null | wc -l
+
+  echo "=== TypeScript ==="
+  npx tsc --noEmit 2&gt;&amp;1 | grep -c "error TS" || echo "0"
+
+  echo "=== Build ==="
+  npm run build 2&gt;&amp;1 | tail -3
+
+Expected:
+  xlsx audit: 0 critical/high for xlsx
+  xlsx imports: 0
+  defineSecret: &gt;= 2
+  process.env secrets: 0
+  :any in reports/dashboard: 0
+  dark mode: &gt;= 2
+  Crisp: EXISTS
+  Help center: EXISTS
+  Blog articles: &gt;= 5
+  TypeScript: 0 errors
+  Build: successful
+
+---
+
+3 MANUAL STEPS YOU MUST DO YOURSELF (cannot be done by Antigravity):
+
+1. CRISP ACCOUNT (5 min):
+   Go to crisp.chat → sign up free → create website → copy Website ID
+   Add to .env.local: NEXT_PUBLIC_CRISP_WEBSITE_ID=your_actual_id
+   This makes the chat widget actually appear
+
+2. STAGING FIREBASE PROJECT (20 min):
+   Go to console.firebase.google.com → Create new project "gst-saas-staging"
+   Run: firebase use --add
+   Select the staging project and name it "staging"
+   Update .firebaserc to have both default and staging entries
+   This gives you a safe environment to test before touching production
+
+3. FIREBASE SECRETS (10 min):
+   Run these commands (Firebase will prompt for values securely):
+     firebase functions:secrets:set RESEND_API_KEY --project gst-saas-9cdfc
+     firebase functions:secrets:set WHATSAPP_TOKEN --project gst-saas-9cdfc
+     firebase functions:secrets:set RAZORPAY_WEBHOOK_SECRET --project gst-saas-9cdfc
+   Then deploy: firebase deploy --only functions --project gst-saas-9cdfc</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function cp() {
+  const el = document.getElementById('pb');
+  if (!el) return;
+  const tmp = document.createElement('div');
+  tmp.innerHTML = el.innerHTML;
+  const text = tmp.innerText || tmp.textContent || '';
+  navigator.clipboard.writeText(text).then(() => {
+    const b = document.getElementById('copybtn');
+    const n = document.querySelector('.nl');
+    if (b) { b.classList.add('ok'); b.innerHTML = '&#x2713; Copied!'; }
+    if (n) { n.textContent = '\u2713 Copied!'; }
+    setTimeout(() => {
+      if (b) { b.classList.remove('ok'); b.innerHTML = '&#x1F4CB; Copy Everything'; }
+      if (n) { n.textContent = '\uD83D\uDCCB Copy Prompt'; }
+    }, 3000);
+  }).catch(() => {
+    const r = document.createRange();
+    r.selectNode(el);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(r);
+    document.execCommand('copy');
+    window.getSelection().removeAllRanges();
+  });
+}
+</script>
+</body>
+</html>

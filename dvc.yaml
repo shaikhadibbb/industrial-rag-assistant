@@ -1,0 +1,21 @@
+stages:
+  ingest:
+    cmd: python scripts/ingest.py --data-dir data/raw
+    deps: 
+      - data/raw
+      - src/ingestion/
+    outs: 
+      - data/processed/
+  
+  evaluate:
+    cmd: python scripts/evaluate.py
+    deps: 
+      - data/processed/
+      - src/evaluation/
+    outs: 
+      - evaluation_results.json
+  
+  quality_gate:
+    cmd: python src/evaluation/quality_gate.py
+    deps: 
+      - evaluation_results.json

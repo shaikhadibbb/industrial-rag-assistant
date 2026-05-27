@@ -1,0 +1,6 @@
+.cache/
+mlruns/
+evaluation_results.json
+monitoring/reports/
+__pycache__/
+.env

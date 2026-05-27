@@ -1,0 +1,20 @@
+1. What causes pressure drop in a compressed air system?
+2. What are the recommended oil change intervals for an air compressor?
+3. How do I calculate the pipe diameter for a compressed air network?
+4. What is the role of an aftercooler in a compressed air system?
+5. How does a rotary screw compressor work?
+6. What are the advantages of synthetic lubricants in compressors?
+7. How do I detect leaks in a compressed air piping system?
+8. What is the difference between oil-injected and oil-free compressors?
+9. How does temperature affect the density of compressed air?
+10. What is the purpose of a receiver tank?
+11. How do I calculate the energy cost of compressed air leaks?
+12. What are the common maintenance tasks for a centrifugal compressor?
+13. How does a desiccant dryer remove moisture?
+14. What is 'pressure dew point' and why is it important?
+15. How do I choose the right size of compressor for a manufacturing plant?
+16. What are the environmental regulations for compressor condensate disposal?
+17. How can variable speed drives (VSD) improve compressor efficiency?
+18. What is the impact of altitude on compressor performance?
+19. How often should intake filters be cleaned or replaced?
+20. What safety precautions are necessary when working with high-pressure air?
