@@ -29,10 +29,13 @@ class QdrantStore:
         with open(config_path, "r") as f:
             config = yaml.safe_load(f)
 
-        # Environment variables override config.yaml (for Render / Docker deployments)
+        # Environment variables override config.yaml (for Render / Docker / Cloud deployments)
         self.host = os.getenv("QDRANT_HOST", config["vector_store"].get("host", "localhost"))
         self.port = int(os.getenv("QDRANT_PORT", config["vector_store"].get("port", 6333)))
         self.collection_name = config["vector_store"]["collection_name"]
+
+        # Qdrant Cloud API key — if set, use URL-based cloud connection
+        qdrant_api_key = os.getenv("QDRANT_API_KEY")
 
         if _qdrant_client_instance is None:
             with _qdrant_client_lock:
@@ -44,17 +47,29 @@ class QdrantStore:
                     connected = False
                     for attempt in range(1, max_retries + 1):
                         try:
-                            logger.info(
-                                f"Connecting to Qdrant at {self.host}:{self.port} (Attempt {attempt}/{max_retries})..."
-                            )
-                            client = qdrant_client.QdrantClient(
-                                host=self.host, port=self.port, timeout=5
-                            )
+                            if qdrant_api_key:
+                                # ☁️  Qdrant Cloud mode: URL + API key (JWT or secret)
+                                cloud_url = f"https://{self.host}"
+                                logger.info(
+                                    f"Connecting to Qdrant Cloud at {cloud_url} (Attempt {attempt}/{max_retries})..."
+                                )
+                                client = qdrant_client.QdrantClient(
+                                    url=cloud_url,
+                                    api_key=qdrant_api_key,
+                                    timeout=10,
+                                )
+                            else:
+                                # 🖥️  Local / Docker mode: host + port
+                                logger.info(
+                                    f"Connecting to Qdrant at {self.host}:{self.port} (Attempt {attempt}/{max_retries})..."
+                                )
+                                client = qdrant_client.QdrantClient(
+                                    host=self.host, port=self.port, timeout=5
+                                )
+
                             client.get_collections()
                             _qdrant_client_instance = client
-                            logger.info(
-                                "Successfully connected to remote Qdrant connection pool."
-                            )
+                            logger.info("Successfully connected to Qdrant.")
                             connected = True
                             break
                         except Exception as e:
@@ -66,10 +81,8 @@ class QdrantStore:
 
                     if not connected:
                         logger.warning(
-                            "Could not connect to remote Qdrant after all retries."
-                        )
-                        logger.info(
-                            "Falling back to local Qdrant storage pool at ./qdrant_data"
+                            "Could not connect to Qdrant after all retries. "
+                            "Falling back to local storage at ./qdrant_data"
                         )
                         _qdrant_client_instance = qdrant_client.QdrantClient(
                             path="./qdrant_data"

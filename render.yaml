@@ -5,17 +5,20 @@ services:
     dockerfilePath: ./Dockerfile
     healthCheckPath: /health
     envVars:
-      - key: API_KEY
-        generateValue: true
-      - key: ALLOWED_ORIGINS
-        value: "*"
-      - key: OLLAMA_BASE_URL
-        value: https://your-ollama-instance.onrender.com
       - key: QDRANT_HOST
-        value: your-qdrant-host
+        value: beb0c63d-8c8c-43ce-8eac-14e790988d58.us-west-2-0.aws.cloud.qdrant.io
       - key: QDRANT_PORT
         value: "6333"
+      - key: ALLOWED_ORIGINS
+        value: "*"
       - key: PYTHONUNBUFFERED
         value: "1"
+      # Secrets — set these manually in the Render dashboard (not stored in git)
+      - key: API_KEY
+        sync: false
+      - key: QDRANT_API_KEY
+        sync: false
+      - key: OLLAMA_BASE_URL
+        sync: false
     autoDeploy: true
     plan: free
