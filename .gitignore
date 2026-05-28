@@ -5,7 +5,7 @@ __pycache__/
 .env
 qdrant_data/
 mlruns/
-data/raw/*.pdf
+data/raw/
 data/processed/
 *.log
 logs/
@@ -14,5 +14,7 @@ logs/
 dist/
 build/
 .pytest_cache/
+.mypy_cache/
 .cache/
 mlflow.db
+

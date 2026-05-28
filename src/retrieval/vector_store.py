@@ -1,6 +1,10 @@
 import logging
 import yaml
 import qdrant_client
+# Monkeypatch QdrantClient to support old search API in newer qdrant-client versions
+if not hasattr(qdrant_client.QdrantClient, "search"):
+    qdrant_client.QdrantClient.search = lambda self, *args, **kwargs: self._client.search(*args, **kwargs)
+
 from llama_index.vector_stores.qdrant import QdrantVectorStore
 from llama_index.core import StorageContext, VectorStoreIndex
 from llama_index.core.schema import TextNode
