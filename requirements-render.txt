@@ -24,3 +24,8 @@ tenacity==8.5.0
 
 # Observability
 mlflow-skinny==3.12.0
+
+# Document parsing and search
+PyMuPDF==1.27.2.3
+llama-index-retrievers-bm25==0.1.5
+rank-bm25==0.2.2
