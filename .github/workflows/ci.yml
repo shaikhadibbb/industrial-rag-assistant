@@ -40,10 +40,10 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
-      - name: Install CI dependencies (lean set)
+      - name: Install all dependencies
         run: |
           pip install --upgrade pip
-          pip install -r requirements-ci.txt
+          pip install -r requirements.txt -r requirements-dev.txt
 
       - name: Run unit tests
         run: pytest tests/unit/ -v --tb=short -x
