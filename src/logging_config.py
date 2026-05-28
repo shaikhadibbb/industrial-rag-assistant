@@ -1,6 +1,7 @@
 import logging.config
 import os
 
+
 def setup_logging():
     logging_config = {
         "version": 1,
@@ -11,7 +12,7 @@ def setup_logging():
             },
             "detailed": {
                 "format": "%(asctime)s - %(name)s - %(levelname)s - %(pathname)s:%(lineno)d - %(message)s"
-            }
+            },
         },
         "handlers": {
             "console": {
@@ -26,15 +27,12 @@ def setup_logging():
                 "maxBytes": 10485760,  # 10MB
                 "backupCount": 5,
                 "level": "INFO",
-                "encoding": "utf8"
-            }
+                "encoding": "utf8",
+            },
         },
-        "root": {
-            "level": "INFO",
-            "handlers": ["console", "file"]
-        }
+        "root": {"level": "INFO", "handlers": ["console", "file"]},
     }
-    
+
     # Ensure logs directory exists
     os.makedirs("logs", exist_ok=True)
     logging.config.dictConfig(logging_config)
