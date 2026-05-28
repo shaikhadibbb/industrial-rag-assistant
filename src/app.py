@@ -149,7 +149,9 @@ async def log_requests_middleware(request: Request, call_next):
 
 def start_mlflow():
     try:
-        mlflow_path = os.path.join(os.getcwd(), "venv", "bin", "mlflow")
+        import shutil
+
+        mlflow_path = shutil.which("mlflow") or "mlflow"
         subprocess.Popen([mlflow_path, "ui", "--port", "5001", "--host", "0.0.0.0"])
     except Exception as e:
         logger.error(f"Failed to start MLflow UI: {e}")
