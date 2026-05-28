@@ -7,10 +7,10 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  lint:
+    name: Lint & Format
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
 
@@ -19,14 +19,8 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
-      - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt -r requirements-dev.txt
-        env:
-          # Skip heavy model downloads during install
-          TRANSFORMERS_OFFLINE: "1"
-          HF_DATASETS_OFFLINE: "1"
+      - name: Install lint tools only
+        run: pip install ruff>=0.4 black>=24.0
 
       - name: Lint with ruff
         run: ruff check src/ tests/
@@ -34,11 +28,28 @@ jobs:
       - name: Format check with black
         run: black --check src/ tests/
 
-      - name: Run unit tests (no services required)
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install CI dependencies (lean set)
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements-ci.txt
+
+      - name: Run unit tests
         run: pytest tests/unit/ -v --tb=short -x
         env:
-          # Prevent any accidental network calls to Qdrant/Ollama
           QDRANT_HOST: localhost
           QDRANT_PORT: "6333"
           OLLAMA_BASE_URL: http://localhost:11434
           API_KEY: ci-test-key
+          PYTHONPATH: .
