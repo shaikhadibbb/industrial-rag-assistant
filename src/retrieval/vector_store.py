@@ -30,8 +30,12 @@ class QdrantStore:
             config = yaml.safe_load(f)
 
         # Environment variables override config.yaml (for Render / Docker / Cloud deployments)
-        self.host = os.getenv("QDRANT_HOST", config["vector_store"].get("host", "localhost"))
-        self.port = int(os.getenv("QDRANT_PORT", config["vector_store"].get("port", 6333)))
+        self.host = os.getenv(
+            "QDRANT_HOST", config["vector_store"].get("host", "localhost")
+        )
+        self.port = int(
+            os.getenv("QDRANT_PORT", config["vector_store"].get("port", 6333))
+        )
         self.collection_name = config["vector_store"]["collection_name"]
 
         # Qdrant Cloud API key — if set, use URL-based cloud connection

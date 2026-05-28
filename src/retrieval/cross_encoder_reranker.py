@@ -2,7 +2,6 @@ import logging
 from typing import List, Optional
 from llama_index.core.postprocessor.types import BaseNodePostprocessor
 from llama_index.core.schema import NodeWithScore, QueryBundle
-from sentence_transformers import CrossEncoder
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +11,7 @@ class CrossEncoderReranker(BaseNodePostprocessor):
 
     model_name: str
     top_n: int
-    _model: CrossEncoder
+    _model: object  # CrossEncoder — lazy imported to avoid requiring torch in CI
 
     def __init__(
         self,
@@ -20,6 +19,9 @@ class CrossEncoderReranker(BaseNodePostprocessor):
         top_n: int = 3,
     ):
         super().__init__(model_name=model_name, top_n=top_n)
+        # Lazy import: avoids pulling PyTorch at module load time (important for CI mocking)
+        from sentence_transformers import CrossEncoder  # noqa: PLC0415
+
         # Use object.__setattr__ to bypass Pydantic field validation
         object.__setattr__(self, "_model", CrossEncoder(model_name))
         logger.info(
