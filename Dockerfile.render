@@ -30,6 +30,7 @@ ENV TOKENIZERS_PARALLELISM=false
 # Render-specific: use fastembed (ONNX, no PyTorch) and skip reranker
 ENV USE_FASTEMBED=true
 ENV SKIP_RERANKER=true
+ENV SKIP_MLFLOW=true
 
 EXPOSE 8000
 

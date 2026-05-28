@@ -148,6 +148,13 @@ async def log_requests_middleware(request: Request, call_next):
 
 
 def start_mlflow():
+    if (
+        os.getenv("SKIP_MLFLOW", "false").lower() == "true"
+        or os.getenv("SKIP_RERANKER", "false").lower() == "true"
+    ):
+        logger.info("SKIP_MLFLOW=true or SKIP_RERANKER=true — skipping MLflow UI startup to save memory.")
+        return
+
     try:
         import shutil
 
