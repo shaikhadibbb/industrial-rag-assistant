@@ -1,6 +1,6 @@
 # Industrial RAG Knowledge Assistant
 
-**Status:** Deployed Prototype | [Live Demo API](https://industrial-rag-assistant.fly.dev/health) (Staging Placeholder)
+**Status:** Deployed Prototype | [Live Demo API](https://industrial-rag-assistant.onrender.com/health) (Staging Placeholder)
 - **RAGAS Faithfulness:** **0.724** (Target: >0.70 ✅ | Baseline: 0.583)
 - **RAGAS Context Recall:** **0.712** (Target: >0.70 ✅ | Baseline: 0.554)
 - **p95 Latency:** **~1.85s** (Target: <2.0s ✅ | Baseline: ~4.5s) *[with LRU-TTL caching]*
