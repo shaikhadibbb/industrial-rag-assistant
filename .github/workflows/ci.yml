@@ -1,18 +1,44 @@
 name: CI
-on: [push, pull_request]
+
+on:
+  push:
+    branches: [main, production-rescue]
+  pull_request:
+    branches: [main]
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
+
       - name: Install dependencies
-        run: pip install -r requirements.txt -r requirements-dev.txt
-      - name: Run tests
-        run: pytest -v
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt -r requirements-dev.txt
+        env:
+          # Skip heavy model downloads during install
+          TRANSFORMERS_OFFLINE: "1"
+          HF_DATASETS_OFFLINE: "1"
+
       - name: Lint with ruff
         run: ruff check src/ tests/
+
       - name: Format check with black
         run: black --check src/ tests/
+
+      - name: Run unit tests (no services required)
+        run: pytest tests/unit/ -v --tb=short -x
+        env:
+          # Prevent any accidental network calls to Qdrant/Ollama
+          QDRANT_HOST: localhost
+          QDRANT_PORT: "6333"
+          OLLAMA_BASE_URL: http://localhost:11434
+          API_KEY: ci-test-key
