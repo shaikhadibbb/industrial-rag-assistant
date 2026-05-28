@@ -1,6 +1,7 @@
 import logging
 import yaml
 import time
+import os
 from llama_index.llms.ollama import Ollama
 from tenacity import retry, stop_after_attempt, wait_exponential
 
@@ -8,26 +9,43 @@ logger = logging.getLogger(__name__)
 
 
 class OllamaLLM:
-    """Client for Mistral-7B via Ollama."""
+    """Client for LLM — supports local Ollama or serverless Groq in production."""
 
     def __init__(self, config_path: str = "configs/config.yaml"):
         with open(config_path, "r") as f:
             config = yaml.safe_load(f)
 
-        self.model = config["llm"]["model"]
-        self.base_url = config["llm"]["base_url"]
         self.temperature = config["llm"]["temperature"]
         self.max_tokens = config["llm"]["max_tokens"]
         self.request_timeout = config["llm"].get("request_timeout", 45.0)
-        self.additional_kwargs = config["llm"].get("additional_kwargs", {})
 
-        self.llm = Ollama(
-            model=self.model,
-            base_url=self.base_url,
-            temperature=self.temperature,
-            request_timeout=self.request_timeout,
-            additional_kwargs=self.additional_kwargs,
-        )
+        # Dynamic Groq/Ollama switch for production vs local dev
+        self.groq_api_key = os.getenv("GROQ_API_KEY")
+
+        if self.groq_api_key:
+            logger.info("Initializing Groq LLM (production serverless mode)...")
+            from llama_index.llms.groq import Groq
+
+            self.model = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
+            self.llm = Groq(
+                model=self.model,
+                api_key=self.groq_api_key,
+                temperature=self.temperature,
+                request_timeout=self.request_timeout,
+            )
+            self.base_url = "https://api.groq.com"
+        else:
+            logger.info("Initializing local Ollama LLM (development mode)...")
+            self.model = config["llm"]["model"]
+            self.base_url = config["llm"]["base_url"]
+            self.additional_kwargs = config["llm"].get("additional_kwargs", {})
+            self.llm = Ollama(
+                model=self.model,
+                base_url=self.base_url,
+                temperature=self.temperature,
+                request_timeout=self.request_timeout,
+                additional_kwargs=self.additional_kwargs,
+            )
 
         self._test_connection()
 

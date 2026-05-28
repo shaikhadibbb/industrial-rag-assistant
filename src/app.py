@@ -357,7 +357,7 @@ async def health():
         ollama_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 
     qdrant_status = "unreachable"
-    ollama_status = "unreachable"
+    llm_status = "unreachable"
 
     # 1. Ping Qdrant
     try:
@@ -372,25 +372,48 @@ async def health():
         logger.error(f"Qdrant health check failed: {e}")
         qdrant_status = f"disconnected: {str(e)}"
 
-    # 2. Ping Ollama
-    try:
-        async with httpx.AsyncClient(timeout=3.0) as httpx_client:
-            response = await httpx_client.get(f"{ollama_url}/api/tags")
-            if response.status_code == 200:
-                ollama_status = "connected"
-            else:
-                ollama_status = f"disconnected (status code: {response.status_code})"
-    except Exception as e:
-        logger.error(f"Ollama health check failed: {e}")
-        ollama_status = f"disconnected: {str(e)}"
+    # 2. Ping LLM (Ollama or Groq)
+    groq_api_key = os.getenv("GROQ_API_KEY")
+    if groq_api_key:
+        try:
+            async with httpx.AsyncClient(timeout=3.0) as httpx_client:
+                headers = {"Authorization": f"Bearer {groq_api_key}"}
+                response = await httpx_client.get(
+                    "https://api.groq.com/openai/v1/models", headers=headers
+                )
+                if response.status_code == 200:
+                    llm_status = "connected"
+                else:
+                    llm_status = (
+                        f"disconnected: Groq API returned status {response.status_code}"
+                    )
+        except Exception as e:
+            logger.error(f"Groq health check failed: {e}")
+            llm_status = f"disconnected: {str(e)}"
+    else:
+        try:
+            async with httpx.AsyncClient(timeout=3.0) as httpx_client:
+                response = await httpx_client.get(f"{ollama_url}/api/tags")
+                if response.status_code == 200:
+                    llm_status = "connected"
+                else:
+                    llm_status = f"disconnected (status code: {response.status_code})"
+        except Exception as e:
+            logger.error(f"Ollama health check failed: {e}")
+            llm_status = f"disconnected: {str(e)}"
 
     overall = (
         "healthy"
-        if qdrant_status == "connected" and ollama_status == "connected"
+        if qdrant_status == "connected" and llm_status == "connected"
         else "degraded"
     )
 
-    return {"status": overall, "qdrant": qdrant_status, "ollama": ollama_status}
+    return {
+        "status": overall,
+        "qdrant": qdrant_status,
+        "llm_provider": "groq" if groq_api_key else "ollama",
+        "llm": llm_status,
+    }
 
 
 @app.get("/metrics")
