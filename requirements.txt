@@ -3,12 +3,12 @@ llama-index-llms-ollama
 llama-index-embeddings-huggingface
 llama-index-vector-stores-qdrant
 qdrant-client
-unstructured[pdf]
+# unstructured[pdf]
 pymupdf
 sentence-transformers
 ragas
 mlflow
-evidently
+# evidently
 fastapi
 uvicorn
 gradio

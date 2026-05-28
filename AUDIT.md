@@ -21,3 +21,8 @@
 7. Technical blog post - LOW (after above done)
 
 ## 90-Day Deadline: August 28, 2026
+
+## Git Branch Setup
+- **Branch:** `production-rescue`
+- **Initialized:** May 28, 2026
+
