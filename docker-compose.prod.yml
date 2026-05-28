@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant_prod
+    restart: unless-stopped
+    expose:
+      - "6333"
+    volumes:
+      - qdrant_data_prod:/qdrant/storage
+    networks:
+      - rag_prod_net
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama_prod
+    restart: unless-stopped
+    expose:
+      - "11434"
+    volumes:
+      - ollama_data_prod:/root/.ollama
+    networks:
+      - rag_prod_net
+
+  app:
+    build: .
+    container_name: app_prod
+    restart: unless-stopped
+    expose:
+      - "8000"
+    depends_on:
+      - qdrant
+      - ollama
+    env_file:
+      - .env
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - QDRANT_HOST=qdrant
+    networks:
+      - rag_prod_net
+
+  nginx:
+    build: ./nginx
+    container_name: nginx_prod
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    networks:
+      - rag_prod_net
+
+volumes:
+  qdrant_data_prod:
+  ollama_data_prod:
+
+networks:
+  rag_prod_net:
+    driver: bridge

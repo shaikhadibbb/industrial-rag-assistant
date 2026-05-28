@@ -6,11 +6,15 @@ API_URL = "http://127.0.0.1:8000/query"
 INGEST_URL = "http://127.0.0.1:8000/ingest"
 
 
+API_KEY = os.getenv("API_KEY", "rag_default_secret_key_2026")
+
+
 def chat_response(message, history):
     payload = {"question": str(message), "session_id": "gradio_session"}
+    headers = {"X-API-Key": API_KEY}
     try:
         with httpx.Client(timeout=200.0) as client:
-            response = client.post(API_URL, json=payload)
+            response = client.post(API_URL, json=payload, headers=headers)
             if response.status_code != 200:
                 return f"Error {response.status_code}: {response.text}", ""
 
@@ -54,9 +58,10 @@ def upload_file(file):
     files = {
         "file": (os.path.basename(file.name), open(file.name, "rb"), "application/pdf")
     }
+    headers = {"X-API-Key": API_KEY}
     try:
         with httpx.Client(timeout=60.0) as client:
-            response = client.post(INGEST_URL, files=files)
+            response = client.post(INGEST_URL, files=files, headers=headers)
             return response.json().get("message", "File uploaded successfully.")
     except Exception as e:
         return f"Ingestion Error: {str(e)}"

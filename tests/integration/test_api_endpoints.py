@@ -1,19 +1,7 @@
-import socket
 import pytest
 from fastapi.testclient import TestClient
-from src.app import app
-
-
-def check_service(host: str, port: int) -> bool:
-    try:
-        with socket.create_connection((host, port), timeout=1.0):
-            return True
-    except OSError:
-        return False
-
-
-QDRANT_UP = check_service("localhost", 6333)
-OLLAMA_UP = check_service("localhost", 11434)
+from src.app import app, API_KEY
+from tests.conftest import QDRANT_UP, OLLAMA_UP
 
 client = TestClient(app)
 
@@ -30,10 +18,11 @@ def test_api_health_endpoint():
 
 @pytest.mark.skipif(
     not (QDRANT_UP and OLLAMA_UP),
-    reason="Requires local Qdrant and Ollama services to be running.",
+    reason="Requires running local Qdrant (port 6333) and Ollama (port 11434) services.",
 )
 def test_api_query_endpoint():
-    response = client.post("/query", json={"question": "Test query"})
+    headers = {"X-API-Key": API_KEY}
+    response = client.post("/query", json={"question": "Test query"}, headers=headers)
     assert response.status_code == 200
     json_data = response.json()
     assert "answer" in json_data
@@ -43,8 +32,11 @@ def test_api_query_endpoint():
 
 def test_api_ingest_invalid_file_type():
     # Attempt uploading non-PDF
+    headers = {"X-API-Key": API_KEY}
     response = client.post(
-        "/ingest", files={"file": ("test.txt", b"dummy content", "text/plain")}
+        "/ingest",
+        files={"file": ("test.txt", b"dummy content", "text/plain")},
+        headers=headers,
     )
     assert response.status_code == 400
     assert "Only PDF files are allowed" in response.json()["detail"]

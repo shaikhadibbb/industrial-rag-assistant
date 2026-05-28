@@ -1,4 +1,3 @@
-import pytest
 from unittest.mock import MagicMock, patch
 from src.retrieval.cross_encoder_reranker import CrossEncoderReranker
 
@@ -16,12 +15,8 @@ def test_cross_encoder_reranker_predict():
 
         from llama_index.core.schema import NodeWithScore, TextNode, QueryBundle
 
-        node1 = NodeWithScore(
-            node=TextNode(text="Node A", id_="node_a"), score=0.5
-        )
-        node2 = NodeWithScore(
-            node=TextNode(text="Node B", id_="node_b"), score=0.5
-        )
+        node1 = NodeWithScore(node=TextNode(text="Node A", id_="node_a"), score=0.5)
+        node2 = NodeWithScore(node=TextNode(text="Node B", id_="node_b"), score=0.5)
 
         results = reranker.postprocess_nodes(
             [node1, node2], QueryBundle(query_str="test")

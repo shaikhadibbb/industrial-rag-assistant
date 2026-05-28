@@ -12,14 +12,19 @@ from llama_index.vector_stores.qdrant import QdrantVectorStore
 from llama_index.core import StorageContext, VectorStoreIndex
 from llama_index.core.schema import TextNode
 from typing import List
+import threading
 
 logger = logging.getLogger(__name__)
+
+_qdrant_client_instance = None
+_qdrant_client_lock = threading.Lock()
 
 
 class QdrantStore:
     """Manager for Qdrant Vector Store."""
 
     def __init__(self, config_path: str = "configs/config.yaml"):
+        global _qdrant_client_instance
         with open(config_path, "r") as f:
             config = yaml.safe_load(f)
 
@@ -27,22 +32,48 @@ class QdrantStore:
         self.port = config["vector_store"].get("port", 6333)
         self.collection_name = config["vector_store"]["collection_name"]
 
-        try:
-            # Try connecting to remote Qdrant first
-            logger.info(f"Connecting to Qdrant at {self.host}:{self.port}")
-            self.client = qdrant_client.QdrantClient(
-                host=self.host, port=self.port, timeout=5
-            )
-            # Check if reachable
-            self.client.get_collections()
-            logger.info("Successfully connected to remote Qdrant.")
-        except Exception as e:
-            logger.warning(
-                f"Could not connect to Qdrant at {self.host}:{self.port}: {e}"
-            )
-            logger.info("Falling back to local Qdrant storage at ./qdrant_data")
-            self.client = qdrant_client.QdrantClient(path="./qdrant_data")
+        if _qdrant_client_instance is None:
+            with _qdrant_client_lock:
+                if _qdrant_client_instance is None:
+                    import time
 
+                    max_retries = 5
+                    retry_delay = 1.0
+                    connected = False
+                    for attempt in range(1, max_retries + 1):
+                        try:
+                            logger.info(
+                                f"Connecting to Qdrant at {self.host}:{self.port} (Attempt {attempt}/{max_retries})..."
+                            )
+                            client = qdrant_client.QdrantClient(
+                                host=self.host, port=self.port, timeout=5
+                            )
+                            client.get_collections()
+                            _qdrant_client_instance = client
+                            logger.info(
+                                "Successfully connected to remote Qdrant connection pool."
+                            )
+                            connected = True
+                            break
+                        except Exception as e:
+                            logger.warning(f"Connection attempt {attempt} failed: {e}")
+                            if attempt < max_retries:
+                                sleep_time = retry_delay * (2 ** (attempt - 1))
+                                logger.info(f"Retrying in {sleep_time:.1f} seconds...")
+                                time.sleep(sleep_time)
+
+                    if not connected:
+                        logger.warning(
+                            "Could not connect to remote Qdrant after all retries."
+                        )
+                        logger.info(
+                            "Falling back to local Qdrant storage pool at ./qdrant_data"
+                        )
+                        _qdrant_client_instance = qdrant_client.QdrantClient(
+                            path="./qdrant_data"
+                        )
+
+        self.client = _qdrant_client_instance
         self.vector_store = QdrantVectorStore(
             client=self.client, collection_name=self.collection_name, path=None
         )

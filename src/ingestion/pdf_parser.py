@@ -25,6 +25,41 @@ class PDFParser:
                 page = doc.load_page(page_num)
                 text = page.get_text()
 
+                # OCR Fallback for image-only or scanned PDFs
+                if not text.strip():
+                    logger.info(
+                        f"Page {page_num + 1} of {filename} yielded empty text. Attempting OCR fallback..."
+                    )
+                    try:
+                        import io
+                        from PIL import Image
+                        import pytesseract
+
+                        # Render page to PNG pixmap using fitz
+                        pix = page.get_pixmap(dpi=150)
+                        img_data = pix.tobytes("png")
+                        img = Image.open(io.BytesIO(img_data))
+
+                        # Run OCR
+                        ocr_text = pytesseract.image_to_string(img)
+                        if ocr_text.strip():
+                            text = ocr_text
+                            logger.info(
+                                f"OCR successfully extracted {len(text)} characters from page {page_num + 1}."
+                            )
+                        else:
+                            logger.warning(
+                                f"OCR returned empty text for page {page_num + 1}."
+                            )
+                    except ImportError:
+                        logger.warning(
+                            "pytesseract or PIL is not installed. Skipping OCR fallback."
+                        )
+                    except Exception as ocr_err:
+                        logger.error(
+                            f"OCR fallback failed on page {page_num + 1}: {ocr_err}"
+                        )
+
                 metadata = {
                     "filename": filename,
                     "page_number": page_num + 1,

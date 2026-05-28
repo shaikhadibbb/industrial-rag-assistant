@@ -74,6 +74,34 @@ class DeduplicationPostprocessor:
         return len(intersection) / len(union)
 
 
+class LRUTTLCache:
+    """Thread-safe LRU Cache with Time-To-Live (TTL) expiration."""
+
+    def __init__(self, maxsize: int = 1000, ttl_seconds: int = 3600):
+        self.maxsize = maxsize
+        self.ttl = ttl_seconds
+        self.cache = {}
+        self.lock = threading.Lock()
+
+    def get(self, key):
+        with self.lock:
+            if key in self.cache:
+                val, timestamp = self.cache[key]
+                if time.time() - timestamp < self.ttl:
+                    return val
+                else:
+                    del self.cache[key]
+            return None
+
+    def set(self, key, val):
+        with self.lock:
+            if len(self.cache) >= self.maxsize:
+                # Discard oldest cache entry
+                oldest_key = next(iter(self.cache))
+                del self.cache[oldest_key]
+            self.cache[key] = (val, time.time())
+
+
 class RAGQueryEngine:
     """Full RAG Query Engine with HyDE and Reranking."""
 
@@ -141,13 +169,42 @@ class RAGQueryEngine:
 
         # Wrap with HyDE
         self.engine = TransformQueryEngine(base_engine, query_transform=self.hyde)
+        self.query_cache = LRUTTLCache(maxsize=1000, ttl_seconds=3600)
 
         init_time = time.time() - start_time
         logger.info(f"Query engine initialized in {init_time:.2f}s")
 
     def query(self, message: str):
-        """Executes a query and returns the response object."""
-        return self.engine.query(message)
+        """Executes a query with caching and timing profiles."""
+        cached = self.query_cache.get(message)
+        if cached is not None:
+            logger.info(f"🚀 Cache HIT for query: '{message}'")
+            return cached
+
+        logger.info(f"🔍 Cache MISS for query: '{message}'. Profiling spans...")
+        t0 = time.time()
+        res = self.engine.query(message)
+        duration = time.time() - t0
+        logger.info(f"⏱️ Timing Span: query_engine_total_s={duration:.2f}s")
+
+        self.query_cache.set(message, res)
+        return res
+
+    async def aquery(self, message: str):
+        """Executes an async query with caching and timing profiles."""
+        cached = self.query_cache.get(message)
+        if cached is not None:
+            logger.info(f"🚀 Cache HIT for async query: '{message}'")
+            return cached
+
+        logger.info(f"🔍 Cache MISS for async query: '{message}'. Profiling spans...")
+        t0 = time.time()
+        res = await self.engine.aquery(message)
+        duration = time.time() - t0
+        logger.info(f"⏱️ Timing Span: query_engine_total_s={duration:.2f}s")
+
+        self.query_cache.set(message, res)
+        return res
 
 
 def get_query_engine():

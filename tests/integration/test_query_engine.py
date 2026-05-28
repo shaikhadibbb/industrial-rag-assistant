@@ -1,23 +1,11 @@
-import socket
 import pytest
 from src.retrieval.query_engine import get_query_engine
-
-
-def check_service(host: str, port: int) -> bool:
-    try:
-        with socket.create_connection((host, port), timeout=1.0):
-            return True
-    except OSError:
-        return False
-
-
-QDRANT_UP = check_service("localhost", 6333)
-OLLAMA_UP = check_service("localhost", 11434)
+from tests.conftest import QDRANT_UP, OLLAMA_UP
 
 
 @pytest.mark.skipif(
     not (QDRANT_UP and OLLAMA_UP),
-    reason="Requires local Qdrant and Ollama services to be running.",
+    reason="Requires running local Qdrant (port 6333) and Ollama (port 11434) services.",
 )
 def test_query_engine_integration():
     engine = get_query_engine()
