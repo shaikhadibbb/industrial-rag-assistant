@@ -4,7 +4,6 @@ import time
 import logging
 import yaml
 import mlflow
-import pandas as pd
 from datetime import datetime
 from datasets import Dataset
 from ragas import evaluate
@@ -38,9 +37,7 @@ class RAGEvaluator:
         """Runs the complete RAG evaluation on the given dataset."""
         logger.info(f"Loading evaluation dataset from {dataset_path}")
         if not os.path.exists(dataset_path):
-            raise FileNotFoundError(
-                f"Evaluation dataset not found at {dataset_path}"
-            )
+            raise FileNotFoundError(f"Evaluation dataset not found at {dataset_path}")
 
         with open(dataset_path, "r") as f:
             data = json.load(f)
@@ -75,9 +72,7 @@ class RAGEvaluator:
 
                 contexts = []
                 if hasattr(response, "source_nodes") and response.source_nodes:
-                    contexts = [
-                        node.node.text for node in response.source_nodes
-                    ]
+                    contexts = [node.node.text for node in response.source_nodes]
 
                 # Fallback to predefined reference contexts if empty
                 if not contexts:
@@ -169,17 +164,13 @@ class RAGEvaluator:
 
         # 3. Log metadata and scores to MLflow SQLite backend
         avg_latency = sum(latencies) / len(latencies) if latencies else 0
-        p95_latency = (
-            sorted(latencies)[int(len(latencies) * 0.95)] if latencies else 0
-        )
+        p95_latency = sorted(latencies)[int(len(latencies) * 0.95)] if latencies else 0
 
         with mlflow.start_run(
             run_name=f"eval-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
         ):
             mlflow.log_param("llm_model", self.config["llm"]["model"])
-            mlflow.log_param(
-                "embedding_model", self.config["embedding"]["model_name"]
-            )
+            mlflow.log_param("embedding_model", self.config["embedding"]["model_name"])
             mlflow.log_param("chunk_size", self.config["data"]["chunk_size"])
             mlflow.log_param(
                 "similarity_top_k",
@@ -228,7 +219,5 @@ class RAGEvaluator:
             mlflow.log_artifact(results_path)
             mlflow.log_artifact(csv_path)
 
-            logger.info(
-                f"Evaluation completed. Results saved to {results_path}"
-            )
+            logger.info(f"Evaluation completed. Results saved to {results_path}")
             return scores, results_path

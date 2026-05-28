@@ -55,9 +55,7 @@ class OllamaLLM:
             logger.info(f"LLM Response received in {duration:.2f}s")
             return response
 
-        logger.info(
-            "Running answer consistency check (generating 3 answers)..."
-        )
+        logger.info("Running answer consistency check (generating 3 answers)...")
         start_time = time.time()
 
         res1 = self.llm.complete(prompt)

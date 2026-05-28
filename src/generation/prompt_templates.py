@@ -35,4 +35,3 @@ Answer: [/INST]
 """
 
 FALLBACK_PROMPT = "I don't have enough information."
-

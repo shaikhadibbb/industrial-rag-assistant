@@ -2,12 +2,12 @@ import time
 import logging
 import yaml
 import threading
+import hashlib
 from functools import lru_cache
 from typing import List
 from llama_index.core import VectorStoreIndex, Settings
 from llama_index.core.indices.query.query_transform import HyDEQueryTransform
-from llama_index.core.query_engine import TransformQueryEngine
-from llama_index.core.postprocessor import SentenceTransformerRerank
+from llama_index.core.query_engine import TransformQueryEngine, RetrieverQueryEngine
 from llama_index.core.schema import NodeWithScore
 from src.retrieval.vector_store import QdrantStore
 from src.retrieval.embedder import BGEEmbedder
@@ -21,7 +21,7 @@ _query_engine_instance = None
 
 
 class DeduplicationPostprocessor:
-    """Remove duplicate chunks based on text similarity and page number."""
+    """Remove duplicate chunks based on SHA-256 chunk content hash and full-text Jaccard similarity."""
 
     def __init__(self, similarity_threshold: float = 0.85):
         self.similarity_threshold = similarity_threshold
@@ -32,28 +32,34 @@ class DeduplicationPostprocessor:
         if not nodes:
             return nodes
 
-        seen_pages = set()
+        seen_hashes = set()
         seen_texts = []
         unique_nodes = []
 
         for node in nodes:
-            page = node.node.metadata.get(
-                "page_label", node.node.metadata.get("page_number", "unknown")
-            )
-            text = node.node.text[:100]
+            # Normalize full chunk text
+            full_text = node.node.text.strip()
+            normalized_text = " ".join(full_text.lower().split())
 
-            if page in seen_pages:
+            # 1. Deduplicate by SHA-256 content hash (exact text duplicates)
+            content_hash = hashlib.sha256(normalized_text.encode("utf-8")).hexdigest()
+            if content_hash in seen_hashes:
+                logger.info("Skipping exact duplicate node via SHA-256 hash.")
                 continue
 
+            # 2. Deduplicate by semantic/Jaccard similarity threshold over full text
             is_duplicate = False
             for seen_text in seen_texts:
-                if self._text_similarity(text, seen_text) > self.similarity_threshold:
+                if (
+                    self._text_similarity(normalized_text, seen_text)
+                    > self.similarity_threshold
+                ):
                     is_duplicate = True
                     break
 
             if not is_duplicate:
-                seen_pages.add(page)
-                seen_texts.append(text)
+                seen_hashes.add(content_hash)
+                seen_texts.append(normalized_text)
                 unique_nodes.append(node)
 
         return unique_nodes
@@ -99,15 +105,37 @@ class RAGQueryEngine:
 
         self.hyde = HyDEQueryTransform(llm=self.llm, include_original=True)
         self.deduplicator = DeduplicationPostprocessor(similarity_threshold=0.85)
-        self.reranker = SentenceTransformerRerank(
-            model=self.config["retrieval"]["reranker_model"],
+        from src.retrieval.cross_encoder_reranker import CrossEncoderReranker
+
+        self.reranker = CrossEncoderReranker(
+            model_name=self.config["retrieval"]["reranker_model"],
             top_n=self.config["retrieval"]["reranker_top_n"],
         )
 
-        # Build base engine
-        base_engine = self.index.as_query_engine(
+        # Build base engine retriever
+        vector_retriever = self.index.as_retriever(
+            similarity_top_k=self.config["retrieval"]["similarity_top_k"]
+        )
+
+        if self.config["retrieval"].get("use_hybrid", False):
+            from src.retrieval.keyword_retriever import KeywordRetriever
+            from src.retrieval.hybrid_retriever import HybridRetriever
+
+            logger.info("Initializing Hybrid RRF Retrieval mode...")
+            self.keyword_retriever = KeywordRetriever(config_path)
+            self.retriever = HybridRetriever(
+                vector_retriever=vector_retriever,
+                keyword_retriever=self.keyword_retriever,
+                similarity_top_k=self.config["retrieval"]["similarity_top_k"],
+            )
+        else:
+            logger.info("Initializing Vector-only Retrieval mode...")
+            self.retriever = vector_retriever
+
+        # Build base engine with selected retriever and postprocessors
+        base_engine = RetrieverQueryEngine.from_args(
+            retriever=self.retriever,
             llm=self.llm,
-            similarity_top_k=self.config["retrieval"]["similarity_top_k"],
             node_postprocessors=[self.deduplicator, self.reranker],
         )
 

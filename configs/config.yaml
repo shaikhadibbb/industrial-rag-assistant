@@ -33,6 +33,7 @@ retrieval:
   similarity_top_k: 6
   reranker_model: cross-encoder/ms-marco-MiniLM-L-6-v2
   reranker_top_n: 3
+  use_hybrid: true
 
 evaluation:
   faithfulness_threshold: 0.75
