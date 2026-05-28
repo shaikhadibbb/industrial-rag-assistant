@@ -1,3 +1,5 @@
+"""Test configuration for CI and local environments."""
+
 import socket
 import pytest
 
@@ -10,7 +12,6 @@ def check_service(host: str, port: int) -> bool:
         return False
 
 
-# Setup global checkers for integration testing dependencies
 QDRANT_UP = check_service("localhost", 6333)
 OLLAMA_UP = check_service("localhost", 11434)
 

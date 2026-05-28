@@ -1,18 +1,21 @@
-# Minimal CI requirements — unit tests only
-# All heavy deps (sentence-transformers/torch/qdrant) are mocked in tests
+# CI requirements — CPU-only torch (no CUDA, ~150MB instead of ~800MB)
+# Install with: pip install --extra-index-url https://download.pytorch.org/whl/cpu -r requirements-ci.txt
 
-# LlamaIndex core (tests import from llama_index.core.schema etc.)
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
+
 llama-index-core==0.10.57
 llama-index-embeddings-huggingface==0.2.3
 llama-index-llms-ollama==0.2.2
 
-# App framework deps needed by src/ module imports
 fastapi==0.110.3
 pydantic==2.7.1
 pyyaml==6.0.1
 httpx==0.27.0
+tenacity==8.2.3
+sentence-transformers
+qdrant-client
 
-# Test & lint tools
 pytest==8.2.2
 pytest-asyncio==0.23.7
 black==24.4.2
