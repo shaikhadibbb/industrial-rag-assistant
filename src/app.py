@@ -152,7 +152,9 @@ def start_mlflow():
         os.getenv("SKIP_MLFLOW", "false").lower() == "true"
         or os.getenv("SKIP_RERANKER", "false").lower() == "true"
     ):
-        logger.info("SKIP_MLFLOW=true or SKIP_RERANKER=true — skipping MLflow UI startup to save memory.")
+        logger.info(
+            "SKIP_MLFLOW=true or SKIP_RERANKER=true — skipping MLflow UI startup to save memory."
+        )
         return
 
     try:
