@@ -1,0 +1,402 @@
+[
+  {
+    "question": "What should be done if the compressor's high-pressure warning transducer value approaches the limit?",
+    "ground_truth": "The monitoring equipment will issue a warning. Action must be taken to inspect the cooling system, check for clogs or ventilation limits, and rectify the issue before the compressor is automatically switched off.",
+    "contexts": [
+      "Compressor operations can be followed on a control panel for more advanced compressors, for example, by directly reading the pressure, temperature and status. If a transducer value approaches an alarm limit, the monitoring equipment will issue a warning. Measures can then be taken before the compressor is switched off."
+    ],
+    "category": "troubleshooting"
+  },
+  {
+    "question": "What is the consequence of internal corrosion in a compressed air receiver vessel?",
+    "ground_truth": "Internal corrosion in a compressed air receiver vessel can weaken the wall thickness, resulting in a sudden burst that has similarities to an explosion, posing a serious risk of injury and property damage.",
+    "contexts": [
+      "A corroded vessel can result in a sudden burst, which in cases has similarities to an explosion. There is serious risk for people injury and damage to installations. A frequent draining of the internal condensing water is necessary."
+    ],
+    "category": "safety procedures"
+  },
+  {
+    "question": "Where are soft start starters usually positioned and why?",
+    "ground_truth": "A soft start starter is usually positioned separately, next to the compressor package, due to heat radiation concerns. However, it may be integrated inside the compressor package if the cooling system is properly secured.",
+    "contexts": [
+      "A starter for soft start is usually positioned separately, next to the compressor, due to heat radiation, but may be integrated inside the compressor package, provided the cooling system has been properly secured."
+    ],
+    "category": "part identification"
+  },
+  {
+    "question": "How often must internal condensing water be drained from an air receiver vessel to maintain it in good condition?",
+    "ground_truth": "The internal condensing water must be drained every 8 hours, or at least once a day, to keep the vessel in good condition.",
+    "contexts": [
+      "A frequent draining of the internal condensing water (each 8 hours or at least once a day) is necessary to maintain the vessel in good condition."
+    ],
+    "category": "maintenance schedules"
+  },
+  {
+    "question": "What is an open cooling system without circulating water and how is it supplied?",
+    "ground_truth": "An open cooling system without circulating water is one where water is supplied by an external source such as municipal water mains, lakes, streams, or wells, passes through the compressor once, and is then discharged as wastewater.",
+    "contexts": [
+      "In an open system without circulating water, water is supplied by an external source: municipal water mains, lake, stream, or well and after passing through the compressor, this water is discharged as wastewater."
+    ],
+    "category": "part identification"
+  },
+  {
+    "question": "What does a scale drawing of a network plan serve as when calculating pipe parameters?",
+    "ground_truth": "A scale drawing of the probable network plan serves as a suitable basis for determining the required pipe lengths for the different parts of the network, including risers, distribution, and service pipes.",
+    "contexts": [
+      "The required pipe lengths for the different parts of the network (risers, distribution and service pipes) are determined. A scale drawing of the probable network plan is a suitable basis for this."
+    ],
+    "category": "maintenance schedules"
+  },
+  {
+    "question": "What are the primary modes of heat transfer in a heat exchanger?",
+    "ground_truth": "The three modes of heat transfer are conduction, convection, and radiation. In real-world situations, they often occur simultaneously.",
+    "contexts": [
+      "This heat transfer can take place in three different ways: through conduction, convection or radiation. In real situations, heat transfer takes place simultaneously but not equally in all three ways."
+    ],
+    "category": "part identification"
+  },
+  {
+    "question": "What troubleshooting value does a compressor's integrated memory storage provide?",
+    "ground_truth": "It logs temperature, pressure, and operating status data for the last 24 hours, allowing technicians to analyze trends over the past day and use logical troubleshooting to quickly identify the cause of downtime.",
+    "contexts": [
+      "Troubleshooting is significantly facilitated on compressors equipped with a memory where data on temperatures, pressure and operating status are logged. The capacity of the memory may cover the last 24 hours. This feature allows trends over the last day to be analyzed."
+    ],
+    "category": "troubleshooting"
+  },
+  {
+    "question": "What safety risk is associated with using high-lime water in an open cooling system?",
+    "ground_truth": "High-lime water can cause boiler scale to form inside the coolers, which gradually impairs cooling performance and increases the risk of thermal shutoffs or compressor damage.",
+    "contexts": [
+      "Furthermore, water that is rich in lime can result in boiler scale forming inside the coolers, and causing gradually impaired cooling."
+    ],
+    "category": "troubleshooting"
+  },
+  {
+    "question": "How are equivalent pipe lengths used when sizing a compressed air distribution network?",
+    "ground_truth": "Equivalent pipe lengths are added to the physical length of the pipe to correct for the additional pressure drop caused by valves, pipe bends, unions, and other fittings.",
+    "contexts": [
+      "The length of the pipe is corrected through the addition of equivalent pipe lengths for valves, pipe bends, unions etc. as illustrated in Figure 3:36."
+    ],
+    "category": "maintenance schedules"
+  },
+  {
+    "question": "Why are starters for soft starts placed separately next to large compressors?",
+    "ground_truth": "Soft starters emit significant heat radiation, making separate placement next to the compressor necessary to prevent overheating, unless the package cooling system is specifically secured.",
+    "contexts": [
+      "A starter for soft start is usually positioned separately, next to the compressor, due to heat radiation, but may be integrated inside the compressor package, provided the cooling system has been properly secured."
+    ],
+    "category": "part identification"
+  },
+  {
+    "question": "What is the hazard of running a corroded air vessel without a daily drain routine?",
+    "ground_truth": "The accumulated water accelerates internal corrosion, which risks a sudden structural burst similar to an explosion, threatening severe personnel injury and equipment destruction.",
+    "contexts": [
+      "A corroded vessel can result in a sudden burst, which in cases has similarities to an explosion. There is serious risk for people injury and damage to installations. A frequent draining of the internal condensing water (each 8 hours or at least once a day) is necessary."
+    ],
+    "category": "safety procedures"
+  },
+  {
+    "question": "What is the standard regulation method for compressors with a capacity greater than 5 kW?",
+    "ground_truth": "The standard regulation method is load-unload-stop, which combines a large regulation range with low energy losses by combining start-stop routines with unloading systems.",
+    "contexts": [
+      "This is the most common regulation method used for compressors with greater than 5 kW capacity, and it combines a large regulation range with low losses. It is, in practice, a combination of the start/stop method and different off-loading systems."
+    ],
+    "category": "maintenance schedules"
+  },
+  {
+    "question": "What is the recommended troubleshooting step if the compressor is blocked from starting after an alarm shutdown?",
+    "ground_truth": "You must first rectify the specific fault that triggered the alarm or manually reset the compressor control system before a restart is allowed.",
+    "contexts": [
+      "If the compressor is shut down by an alarm, compressor restart is blocked until the fault has been rectified or the compressor is reset manually."
+    ],
+    "category": "troubleshooting"
+  },
+  {
+    "question": "What is the main safety procedure required before performing maintenance on high-voltage powered starters?",
+    "ground_truth": "High-voltage powered starters are housed in a separate electrical cabinet. Maintenance requires isolating the cabinet, locking it out, and verifying zero voltage to prevent electrical shock.",
+    "contexts": [
+      "High-voltage powered compressors always have their start equipment in a separate electrical cabinet."
+    ],
+    "category": "safety procedures"
+  },
+  {
+    "question": "What action should be taken if lake water is used for an open cooling system to prevent clogging?",
+    "ground_truth": "The water must be filtered and purified before entering the compressor cooling channels to limit the risk of clogging.",
+    "contexts": [
+      "Water from a lake or stream is normally free of charge, but must be filtered and purified to limit the risk of clogging the cooling system."
+    ],
+    "category": "maintenance schedules"
+  },
+  {
+    "question": "Why is a corrosion allowance added to a receiver vessel's shell thickness?",
+    "ground_truth": "It is added to ensure a proper lifetime of the vessel by compensating for the wall thickness lost to internal corrosion over time.",
+    "contexts": [
+      "Therefore, the wall thickness always has a 'corrosion allowance' on top of the required shell thickness to ensure a proper lifetime of the vessel."
+    ],
+    "category": "safety procedures"
+  },
+  {
+    "question": "How can the flow rate of screw compressors be regulated using the discharge port?",
+    "ground_truth": "It can be regulated by moving the position of the discharge port into the housing, in the rotors' lengthways direction, towards the inlet. However, this is unusual and leads to high power consumption.",
+    "contexts": [
+      "The flow rate of screw compressors can be regulated by moving the position of the discharge port into the housing, in the rotors' lengthways direction, towards the inlet. However, this method generates high power consumption."
+    ],
+    "category": "part identification"
+  },
+  {
+    "question": "What should a maintenance technician do first if a compressor is shut down due to an over-temperature alarm?",
+    "ground_truth": "The technician should access the control panel memory logs to review temperature and pressure trends leading up to the shutdown, locate the root cause (e.g. cooler scaling or low coolant flow), and fix it before resetting the machine.",
+    "contexts": [
+      "If the compressor is shut down by an alarm, compressor restart is blocked until the fault has been rectified or the compressor is reset manually. Troubleshooting is significantly facilitated on compressors equipped with a memory."
+    ],
+    "category": "troubleshooting"
+  },
+  {
+    "question": "How is a non-circulating open cooling system controlled to maintain desired air temperatures?",
+    "ground_truth": "It must be controlled by a thermostat that automatically regulates the water consumption rate and maintains the desired compressed air temperature.",
+    "contexts": [
+      "The system should be controlled by a thermostat, to maintain the desired air temperature as well as to govern water consumption."
+    ],
+    "category": "maintenance schedules"
+  },
+  {
+    "question": "What are the common causes of internal corrosion in compressed air vessels?",
+    "ground_truth": "Internal corrosion is primarily caused by condensing water inside the vessel, especially when collecting air without an upstream air dryer, and is accelerated by external contaminants like sulfurs or salt.",
+    "contexts": [
+      "The reason of the internal corrosion is a complex phenomenon, which is mainly due to the presence of condensing water inside the vessel... External environment (e.g. sulfurs, sea environment) also affect the internal corrosion."
+    ],
+    "category": "safety procedures"
+  },
+  {
+    "question": "What is an odd or unusual method to provide continuous flow rate control for process reciprocating compressors?",
+    "ground_truth": "An odd method is allowing the inlet valve to remain open during a smaller or greater part of the piston stroke, providing nearly continuous flow control.",
+    "contexts": [
+      "An odd method used for process compressors is to allow the inlet valve to be open during a smaller or greater part of the piston stroke to provide nearly continuous flow rate control."
+    ],
+    "category": "part identification"
+  },
+  {
+    "question": "How can scaling inside compressor coolers be diagnosed?",
+    "ground_truth": "It is diagnosed by observing a gradual increase in the compressor's outlet temperature over time on the control panel, representing gradually impaired cooling efficiency caused by lime deposits.",
+    "contexts": [
+      "Furthermore, water that is rich in lime can result in boiler scale forming inside the coolers, and causing gradually impaired cooling. Compressor operations can be followed on a control panel."
+    ],
+    "category": "troubleshooting"
+  },
+  {
+    "question": "What parameter is essential to determine standard pipe size when designing air networks?",
+    "ground_truth": "You must know the flow rate, operating pressure, allowed pressure drop, and the corrected pipe length (including equivalent lengths for fittings).",
+    "contexts": [
+      "The flow rate, pressure, allowed pressure drop and the pipe length must be known in order to make this calculation. Standard pipe of the closest, largest diameter is then selected."
+    ],
+    "category": "maintenance schedules"
+  },
+  {
+    "question": "What safety risk arises from salt water exposure in open cooling systems?",
+    "ground_truth": "Salt water is highly corrosive and can degrade heat exchanger structures, leading to leaks and severe mechanical failures, unless the system is specifically designed and dimensioned to handle salt water.",
+    "contexts": [
+      "The same applies to salt water, which may however be used if the system is designed properly and dimensioned accordingly."
+    ],
+    "category": "safety procedures"
+  },
+  {
+    "question": "What is the typical capacity memory limit for troubleshooting logs on advanced compressors?",
+    "ground_truth": "The memory capacity usually covers the last 24 hours of operating data, logging pressure, temperatures, and status indicators.",
+    "contexts": [
+      "Troubleshooting is significantly facilitated on compressors equipped with a memory where data on temperatures, pressure and operating status are logged. The capacity of the memory may cover the last 24 hours."
+    ],
+    "category": "troubleshooting"
+  },
+  {
+    "question": "Where should starters for soft start be placed if they cannot be placed separately?",
+    "ground_truth": "They can be integrated inside the compressor package, but only if the package cooling system has been properly secured to dissipate the heat radiation.",
+    "contexts": [
+      "A starter for soft start is usually positioned separately... but may be integrated inside the compressor package, provided the cooling system has been properly secured."
+    ],
+    "category": "part identification"
+  },
+  {
+    "question": "What are optional regulations and recommendations in standards used for?",
+    "ground_truth": "Optional standards are used to facilitate engineering work with specifications, component selection, performance measurements, and manufacturing drawings.",
+    "contexts": [
+      "Binding regulations can apply, for example, to safety for people and property while optional standards are used to facilitate work with specifications, selection of quality, performing and reporting measurements, manufacturing drawings etc."
+    ],
+    "category": "safety procedures"
+  },
+  {
+    "question": "Why is an open cooling system without circulating water considered expensive to run?",
+    "ground_truth": "It continuously consumes fresh water from external supplies (especially when using municipal water mains) and discharges it directly as wastewater, incurring high running costs.",
+    "contexts": [
+      "Generally, an open system is easy and inexpensive to install, but expensive to run, especially if the cooling water is taken from the municipal water mains."
+    ],
+    "category": "troubleshooting"
+  },
+  {
+    "question": "How are international standards beneficial to final engineering customers?",
+    "ground_truth": "They increase the interchangeability of parts and systems, and allow operational, environmental, and safety performance statements to be compared on equal terms.",
+    "contexts": [
+      "The benefits of international standardization are obvious to both manufacturers... and final customers. It increases the interchangeability of products and systems, and allows performance statements to be compared on equal terms."
+    ],
+    "category": "part identification"
+  },
+  {
+    "question": "What is the primary cause of sudden vessel bursts in compressor systems?",
+    "ground_truth": "The primary cause is internal corrosion stemming from accumulated condensed water inside the vessel shell, weakening the metal wall under high pressure.",
+    "contexts": [
+      "A corroded vessel can result in a sudden burst, which in cases has similarities to an explosion... The reason of the internal corrosion is a complex phenomenon, which is mainly due to the presence of condensing water inside the vessel."
+    ],
+    "category": "safety procedures"
+  },
+  {
+    "question": "What troubleshooting step should be performed if a cooling system is clogged by lake water usage?",
+    "ground_truth": "The technician must inspect and clear the raw water filters and flushing lines, and verify that the water purification system is active and operating within specifications.",
+    "contexts": [
+      "Water from a lake or stream is normally free of charge, but must be filtered and purified to limit the risk of clogging the cooling system."
+    ],
+    "category": "troubleshooting"
+  },
+  {
+    "question": "Under what condition do optional standards become legally binding?",
+    "ground_truth": "They become binding when they are written into local legislation or explicitly quoted in a commercial agreement between two parties.",
+    "contexts": [
+      "Sometimes regulations in standards may become binding when they come into force through legislation. If a standard is quoted in a commercial agreement it can thereby also be made binding."
+    ],
+    "category": "safety procedures"
+  },
+  {
+    "question": "What are the common starter types integrated inside smaller compressor packages?",
+    "ground_truth": "Starters for direct start and star-delta start are commonly integrated directly in the compressor unit.",
+    "contexts": [
+      "The starters for direct start and star-delta-start are, in most cases, integrated in the compressor."
+    ],
+    "category": "part identification"
+  },
+  {
+    "question": "Why is it important to prevent heat buildup around starters in large compressor plants?",
+    "ground_truth": "Heat accumulation can lead to starter failure or premature trip. In large plants, starters are placed separately in the switchgear room to manage heat development and provide easy service access.",
+    "contexts": [
+      "For a large compressor plant, the units may be placed separately in the switchgear, due to space requirements, heat development and access for service."
+    ],
+    "category": "troubleshooting"
+  },
+  {
+    "question": "What is conduction in the context of heat exchanger operation?",
+    "ground_truth": "Conduction is the transfer of thermal energy via direct contact of particles, occurring between solid bodies or between thin layers of fluid.",
+    "contexts": [
+      "Conduction is the transfer of heat by direct contact of particles. It takes place between solid bodies or between thin layers of a liquid or gas."
+    ],
+    "category": "part identification"
+  },
+  {
+    "question": "What is the baseline risk of failing to drain condensed water from the air receiver every day?",
+    "ground_truth": "Failing to drain water results in rapid internal corrosion, drastically increasing the risk of a catastrophic high-pressure vessel rupture, risking fatalities and massive facility destruction.",
+    "contexts": [
+      "A corroded vessel can result in a sudden burst... There is serious risk for people injury and damage to installations. A frequent draining of the internal condensing water (each 8 hours or at least once a day) is necessary."
+    ],
+    "category": "safety procedures"
+  },
+  {
+    "question": "How does a soft starter differ in placement compared to star-delta starters and why?",
+    "ground_truth": "Soft starters emit much more heat radiation, meaning they are usually positioned separately outside the compressor, whereas star-delta starters are compact enough to be integrated directly inside.",
+    "contexts": [
+      "A starter for soft start is usually positioned separately, next to the compressor, due to heat radiation, but may be integrated... The starters for direct start and star/delta-start are, in most cases, integrated in the compressor."
+    ],
+    "category": "part identification"
+  },
+  {
+    "question": "What troubleshooting value does the control panel of an advanced compressor offer?",
+    "ground_truth": "It allows operators to directly read operating pressure, temperature, and system status in real-time, warning them when limits are approached so corrective measures can be taken.",
+    "contexts": [
+      "Compressor operations can be followed on a control panel for more advanced compressors, for example, by directly reading the pressure, temperature and status. If a transducer value approaches an alarm limit, the monitoring equipment will issue a warning."
+    ],
+    "category": "troubleshooting"
+  },
+  {
+    "question": "What safety risk applies specifically to binding standards in compressed air design?",
+    "ground_truth": "Binding regulations apply to safety for people and property, dictating pressure vessel codes and isolation procedures to prevent explosions and shock hazards.",
+    "contexts": [
+      "Binding regulations can apply, for example, to safety for people and property while optional standards are used to facilitate work with specifications."
+    ],
+    "category": "safety procedures"
+  },
+  {
+    "question": "What diagnostic steps should be taken if a compressor's cooling water consumption spikes abnormally?",
+    "ground_truth": "The technician should inspect the controlling thermostat to ensure it is correctly reading temperatures and throttling water consumption, rather than remaining stuck open.",
+    "contexts": [
+      "The system should be controlled by a thermostat, to maintain the desired air temperature as well as to govern water consumption."
+    ],
+    "category": "troubleshooting"
+  },
+  {
+    "question": "How are separate starters configured in a large compressor plant for optimal thermal management?",
+    "ground_truth": "They are placed separately in a dedicated switchgear room to handle space limits, isolate heat emission, and ensure safe access for service.",
+    "contexts": [
+      "For a large compressor plant, the units may be placed separately in the switchgear, due to space requirements, heat development and access for service."
+    ],
+    "category": "troubleshooting"
+  },
+  {
+    "question": "Why is an open system with circulating water preferred over one without circulating water?",
+    "ground_truth": "An open system with circulating water re-cools the water in an open cooling tower, saving massive operational water costs compared to discharging fresh water directly to sewer.",
+    "contexts": [
+      "In an open system without circulating water, this water is discharged as wastewater... In an open system with circulating water, cooling water from the compressor is re-cooled in an open cooling tower."
+    ],
+    "category": "troubleshooting"
+  },
+  {
+    "question": "What is the core thermodynamic mechanism of conduction in metals?",
+    "ground_truth": "Vibrating atoms collide and transfer kinetic energy directly to adjacent atoms that have less kinetic energy (lower temperature).",
+    "contexts": [
+      "Conduction is the transfer of heat by direct contact... Vibrating atoms give off a part of their kinetic energy to the adjacent atoms that vibrate less."
+    ],
+    "category": "part identification"
+  },
+  {
+    "question": "What are the common safety hazards of boiler scale in cooling systems?",
+    "ground_truth": "Boiler scale acts as thermal insulation, leading to overheating of the compressor parts, which can cause sudden component failure or high-temperature trips.",
+    "contexts": [
+      "Furthermore, water that is rich in lime can result in boiler scale forming inside the coolers, and causing gradually impaired cooling."
+    ],
+    "category": "safety procedures"
+  },
+  {
+    "question": "How is a compressor restart managed after an alarm shutdown?",
+    "ground_truth": "The restart is strictly blocked by the system controller until the physical fault is corrected and the system is manually reset by authorized personnel.",
+    "contexts": [
+      "If the compressor is shut down by an alarm, compressor restart is blocked until the fault has been rectified or the compressor is reset manually."
+    ],
+    "category": "troubleshooting"
+  },
+  {
+    "question": "What diagnostic tools facilitate troubleshooting when analyzing compressor downs?",
+    "ground_truth": "A built-in data logging memory that stores the last 24 hours of operating states, pressures, and temperatures facilitates quick root-cause analysis.",
+    "contexts": [
+      "Troubleshooting is significantly facilitated on compressors equipped with a memory where data on temperatures, pressure and operating status are logged. The capacity of the memory may cover the last 24 hours."
+    ],
+    "category": "troubleshooting"
+  },
+  {
+    "question": "What is the typical pressure drop target across the distribution pipe system in compressed air design?",
+    "ground_truth": "The pressure drop across the main distribution pipe system should not exceed 0.1 bar.",
+    "contexts": [
+      "The pressure drop for the components is obtained from the component suppliers, while the pressure drop in the pipe system should not exceed 0.1 bar."
+    ],
+    "category": "maintenance schedules"
+  },
+  {
+    "question": "Why must oil-lubricated compressor condensate be processed before sewer discharge?",
+    "ground_truth": "Oil-lubricated compressor condensate contains small amounts of oil. This oil must be removed by an oil-water separator before disposal to prevent environmental contamination.",
+    "contexts": [
+      "Because an oil-lubricated compressor has been chosen, the water condensation separated in the compressor and refrigerant dryer will contain small amounts of oil. The oil must be separated before the water is released into the sewer, which can be done using oil separator."
+    ],
+    "category": "safety procedures"
+  },
+  {
+    "question": "What is the purpose of adding a refrigerant dryer in a compressed air central plant?",
+    "ground_truth": "It separates water condensation from the air system to prevent moisture accumulation downstream, which causes internal piping and receiver corrosion.",
+    "contexts": [
+      "Because an oil-lubricated compressor has been chosen, the water condensation separated in the compressor and refrigerant dryer will contain small amounts of oil... the refrigerant dryer should be able to handle..."
+    ],
+    "category": "part identification"
+  }
+]
