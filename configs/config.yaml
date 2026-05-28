@@ -16,6 +16,13 @@ llm:
   base_url: http://localhost:11434
   temperature: 0.1
   max_tokens: 1024
+  request_timeout: 45.0
+  additional_kwargs:
+    num_predict: 128
+    num_ctx: 512
+    top_k: 10
+    top_p: 0.9
+    repeat_penalty: 1.1
 
 vector_store:
   host: localhost

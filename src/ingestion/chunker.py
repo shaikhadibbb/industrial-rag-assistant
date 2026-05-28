@@ -4,7 +4,6 @@ from typing import List
 from llama_index.core.node_parser import SentenceWindowNodeParser, TokenTextSplitter
 from llama_index.core.schema import TextNode, Document
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class DocumentChunker:

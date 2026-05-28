@@ -3,7 +3,6 @@ import yaml
 import mlflow
 import sys
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def check_quality(config_path: str = "configs/config.yaml"):

@@ -10,7 +10,6 @@ from llama_index.core import StorageContext, VectorStoreIndex
 from llama_index.core.schema import TextNode
 from typing import List
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class QdrantStore:

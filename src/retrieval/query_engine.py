@@ -1,6 +1,7 @@
 import time
 import logging
 import yaml
+import threading
 from functools import lru_cache
 from typing import List, Optional
 import numpy as np
@@ -14,11 +15,12 @@ from src.retrieval.vector_store import QdrantStore
 from src.retrieval.embedder import BGEEmbedder
 from src.generation.llm_client import OllamaLLM
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Module-level singleton
+# Module-level singleton and lock
+_query_engine_lock = threading.Lock()
 _query_engine_instance = None
+
 
 class DeduplicationPostprocessor:
     """Remove duplicate chunks based on text similarity and page number."""
@@ -121,5 +123,7 @@ class RAGQueryEngine:
 def get_query_engine():
     global _query_engine_instance
     if _query_engine_instance is None:
-        _query_engine_instance = RAGQueryEngine()
+        with _query_engine_lock:
+            if _query_engine_instance is None:
+                _query_engine_instance = RAGQueryEngine()
     return _query_engine_instance

@@ -4,7 +4,6 @@ import time
 from llama_index.llms.ollama import Ollama
 from tenacity import retry, stop_after_attempt, wait_exponential
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class OllamaLLM:
@@ -18,20 +17,17 @@ class OllamaLLM:
         self.base_url = config['llm']['base_url']
         self.temperature = config['llm']['temperature']
         self.max_tokens = config['llm']['max_tokens']
+        self.request_timeout = config['llm'].get('request_timeout', 45.0)
+        self.additional_kwargs = config['llm'].get('additional_kwargs', {})
         
         self.llm = Ollama(
             model=self.model,
             base_url=self.base_url,
-            request_timeout=45.0,
-            additional_kwargs={
-                "num_predict": 128,
-                "num_ctx": 512,
-                "temperature": 0.1,
-                "top_k": 10,
-                "top_p": 0.9,
-                "repeat_penalty": 1.1
-            }
+            temperature=self.temperature,
+            request_timeout=self.request_timeout,
+            additional_kwargs=self.additional_kwargs
         )
+
         
         self._test_connection()
 

@@ -13,7 +13,6 @@ from ragas.metrics import (
 from datasets import Dataset
 from src.retrieval.query_engine import RAGQueryEngine
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class RagasEvaluator:

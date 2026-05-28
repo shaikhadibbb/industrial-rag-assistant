@@ -4,7 +4,6 @@ import logging
 from typing import List
 from llama_index.core import Document
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class PDFParser:

@@ -4,9 +4,31 @@ echo "🔍 Verifying Industrial RAG Assistant..."
 # Create logs directory
 mkdir -p logs
 
-# Kill existing processes
-lsof -ti:8000,7860,5001 | xargs kill -9 2>/dev/null
+# Kill existing processes gracefully
+PIDS=$(lsof -t -i:8000,7860,5001 2>/dev/null)
+if [ -n "$PIDS" ]; then
+    echo "🔄 Stopping existing processes gracefully (SIGTERM)..."
+    echo "$PIDS" | xargs kill -15 2>/dev/null
+    
+    # Wait for up to 5 seconds to check if they are shut down
+    for i in {1..5}; do
+        PIDS_LEFT=$(lsof -t -i:8000,7860,5001 2>/dev/null)
+        if [ -z "$PIDS_LEFT" ]; then
+            echo "✅ Processes shut down gracefully."
+            break
+        fi
+        sleep 1
+    done
+    
+    # If still running, force kill
+    PIDS_LEFT=$(lsof -t -i:8000,7860,5001 2>/dev/null)
+    if [ -n "$PIDS_LEFT" ]; then
+        echo "⚠️ Processes still running, forcing shutdown (SIGKILL)..."
+        echo "$PIDS_LEFT" | xargs kill -9 2>/dev/null
+    fi
+fi
 sleep 2
+
 
 # Check Docker/Qdrant
 if curl -s http://localhost:6333/health > /dev/null 2>&1; then
