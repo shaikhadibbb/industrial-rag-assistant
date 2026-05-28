@@ -13,6 +13,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements-render.txt .
 RUN pip install --no-cache-dir -r requirements-render.txt
 
+# Pre-download FastEmbed model files to bake them into the image
+# This saves memory during startup (no unzipping/downloading in constrained RAM)
+RUN python -c "from fastembed import TextEmbedding; TextEmbedding(model_name='BAAI/bge-small-en-v1.5', cache_dir='/app/.cache/fastembed')"
+
 COPY . .
 
 RUN useradd -m appuser && chown -R appuser:appuser /app
