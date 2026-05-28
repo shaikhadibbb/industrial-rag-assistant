@@ -158,9 +158,12 @@ def start_mlflow():
 @app.on_event("startup")
 async def startup_event():
     try:
-        # Start MLflow UI in background
+        # Start MLflow UI in background (non-critical)
         threading.Thread(target=start_mlflow, daemon=True).start()
+    except Exception as e:
+        logger.warning(f"MLflow startup skipped: {e}")
 
+    try:
         # Initialize global settings
         Settings.embed_model = BGEEmbedder().get_embedding_model()
         Settings.llm = OllamaLLM().get_llm()
@@ -169,7 +172,10 @@ async def startup_event():
         get_query_engine()
         logger.info("Startup: RAG Engine initialized.")
     except Exception as e:
-        logger.error(f"Startup Failure: {e}")
+        logger.warning(
+            f"Startup: RAG engine could not initialize (services may not be ready): {e}. "
+            "Engine will initialize on first request."
+        )
 
 
 @app.exception_handler(StarletteHTTPException)
@@ -331,10 +337,13 @@ async def query_rag_stream(request: QueryRequest, raw_request: Request):
 @app.get("/health")
 async def health():
     config_path = "configs/config.yaml"
-    with open(config_path, "r") as f:
-        config = yaml.safe_load(f)
-
-    ollama_url = config["llm"]["base_url"]
+    try:
+        with open(config_path, "r") as f:
+            config = yaml.safe_load(f)
+        # OLLAMA_BASE_URL env var overrides config (for Render deployments)
+        ollama_url = os.getenv("OLLAMA_BASE_URL", config["llm"]["base_url"])
+    except Exception:
+        ollama_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 
     qdrant_status = "unreachable"
     ollama_status = "unreachable"

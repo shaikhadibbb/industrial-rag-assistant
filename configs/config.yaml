@@ -13,6 +13,7 @@ embedding:
 
 llm:
   model: mistral:7b-instruct
+  # Overridden by OLLAMA_BASE_URL environment variable at runtime
   base_url: http://localhost:11434
   temperature: 0.1
   max_tokens: 1024
@@ -25,6 +26,7 @@ llm:
     repeat_penalty: 1.1
 
 vector_store:
+  # Overridden by QDRANT_HOST / QDRANT_PORT environment variables at runtime
   host: localhost
   port: 6333
   collection_name: industrial_docs

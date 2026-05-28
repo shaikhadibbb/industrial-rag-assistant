@@ -1,4 +1,5 @@
 import logging
+import os
 import yaml
 import qdrant_client
 
@@ -28,8 +29,9 @@ class QdrantStore:
         with open(config_path, "r") as f:
             config = yaml.safe_load(f)
 
-        self.host = config["vector_store"].get("host", "localhost")
-        self.port = config["vector_store"].get("port", 6333)
+        # Environment variables override config.yaml (for Render / Docker deployments)
+        self.host = os.getenv("QDRANT_HOST", config["vector_store"].get("host", "localhost"))
+        self.port = int(os.getenv("QDRANT_PORT", config["vector_store"].get("port", 6333)))
         self.collection_name = config["vector_store"]["collection_name"]
 
         if _qdrant_client_instance is None:

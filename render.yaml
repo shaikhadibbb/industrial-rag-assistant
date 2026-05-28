@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: industrial-rag-assistant
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: API_KEY
+        generateValue: true
+      - key: ALLOWED_ORIGINS
+        value: "*"
+      - key: OLLAMA_BASE_URL
+        value: https://your-ollama-instance.onrender.com
+      - key: QDRANT_HOST
+        value: your-qdrant-host
+      - key: QDRANT_PORT
+        value: "6333"
+      - key: PYTHONUNBUFFERED
+        value: "1"
+    autoDeploy: true
+    plan: free

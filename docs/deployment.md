@@ -1,155 +1,152 @@
-# Production Cloud Deployment Guide
+# Render.com Deployment Guide
 
-This guide details the procedures for staging, launching, and maintaining the production-grade Industrial RAG Assistant on cloud services. We focus on **Fly.io** (lightweight VM platform with persistent volumes) and **AWS ECS/Fargate** (enterprise-grade container orchestrator).
+This guide deploys the **Industrial RAG Assistant** (FastAPI + Qdrant + Ollama) to [Render.com](https://render.com) — no credit card required.
 
 ---
 
-## ⚡ 1. Fly.io Staging (Recommended for Free/Low-Cost Staging)
+## Architecture on Render
 
-Fly.io is highly recommended due to native support for Dockerfiles, low-latency persistent volumes, and simple CLI commands.
-
-### Prerequisites
-1. Install Fly CLI: `curl -L https://fly.io/install.sh | sh`
-2. Authenticate: `fly auth login`
-
-### Step 1: Initialize the App
-Run this command from your project root:
-```bash
-fly launch --no-deploy
 ```
-- Select your target region (e.g., Frankfurt `fra` if targeting German applications).
-- Do not configure a database automatically when prompted.
-
-### Step 2: Configure Persistent Volumes
-We need a persistent volume to store Qdrant indices and Ollama models so they are not wiped on reboot.
-
-Create 1GB volumes in your target region:
-```bash
-fly volumes create qdrant_storage --size 2 --region fra
-fly volumes create ollama_storage --size 5 --region fra
+Internet → Render Web Service (FastAPI/Docker)
+                 ↓
+         Qdrant Cloud (free tier) — vector storage
+         Ollama API (external or Render private service)
 ```
 
-### Step 3: Configure `fly.toml`
-Create/modify the generated `fly.toml` to attach the volumes and specify routing. Below is a production-grade template:
+Since Render's free tier gives you **1 web service** with **512 MB RAM**, we use:
+- **Qdrant Cloud** (free 1GB cluster) for vector storage
+- The app's **local Qdrant fallback** (`./qdrant_data`) for demo deployments
 
-```toml
-app = "industrial-rag-assistant"
-primary_region = "fra"
+---
 
-[env]
-  QDRANT_HOST = "127.0.0.1"
-  OLLAMA_BASE_URL = "http://127.0.0.1:11434"
-  ALLOWED_ORIGINS = "https://industrial-rag-assistant.fly.dev"
+## Step 1: Push to GitHub
 
-[[mounts]]
-  source = "qdrant_storage"
-  destination = "/qdrant/storage"
-
-[[mounts]]
-  source = "ollama_storage"
-  destination = "/root/.ollama"
-
-[http_service]
-  internal_port = 8000
-  force_https = true
-  auto_stop_machines = false
-  auto_start_machines = true
-  min_machines_running = 1
-  processes = ["app"]
-
-[[services]]
-  protocol = "tcp"
-  internal_port = 8000
-  processes = ["app"]
-
-  [[services.ports]]
-    port = 80
-    handlers = ["http"]
-
-  [[services.ports]]
-    port = 443
-    handlers = ["tls", "http"]
-
-  [services.concurrency]
-    type = "connections"
-    hard_limit = 100
-    soft_limit = 80
-```
-
-### Step 4: Add Environment Secrets
-Configure your production API Key securely:
 ```bash
-fly secrets set API_KEY="your-production-secure-uuid-or-key"
-```
-
-### Step 5: Deploy
-```bash
-fly deploy
+git add .
+git commit -m "feat: add Render deployment config"
+git push origin main
 ```
 
 ---
 
-## ☁️ 2. AWS ECS Fargate Staging (Enterprise Standard)
+## Step 2: Create a Free Qdrant Cloud Cluster
 
-For enterprise-grade high availability, deploy using AWS ECS and AWS Fargate (serverless containers) behind an Application Load Balancer (ALB).
-
-```mermaid
-graph TD
-    User([User]) -->|HTTPS| ALB[Application Load Balancer]
-    ALB -->|Port 8000| Service[FastAPI ECS Service]
-    Service -->|Local/Bridge| Qdrant[Qdrant EFS Volume]
-    Service -->|Ollama URL| Ollama[Ollama Container]
-```
-
-### Infrastructure Setup Steps
-
-1. **VPC & Security Groups**:
-   - Create a VPC with 2 public subnets and 2 private subnets.
-   - Set up an ALB in the public subnets.
-   - Configure a Security Group for ALB allowing port 80/443, and a Security Group for ECS Task allowing inbound port 8000 from the ALB.
-
-2. **AWS EFS Volume (Elastic File System)**:
-   - Create an EFS file system to act as persistent shared storage.
-   - Create EFS mount targets in each private subnet of your VPC.
-   - Reference the EFS file system in your ECS Task Definition for the `/qdrant/storage` directory.
-
-3. **ECS Task Definition (`task-definition.json`)**:
-   - Define your task with 2 vCPUs and 4GB RAM minimum (required to run the sentence transformer embeddings locally).
-   - Configure three container definitions:
-     1. **`app`**: FastAPI server built from your Dockerfile, exposing port 8000. Set environment variables:
-        - `QDRANT_HOST=localhost`
-        - `OLLAMA_BASE_URL=http://localhost:11434`
-        - `API_KEY` mapped from AWS Secrets Manager.
-     2. **`qdrant`**: Image `qdrant/qdrant:latest`, exposing port 6333, mount volume `qdrant-efs` at `/qdrant/storage`.
-     3. **`ollama`**: Image `ollama/ollama:latest`, exposing port 11434.
-
-4. **SSL Termination**:
-   - Issue a certificate via AWS Certificate Manager (ACM) for your domain name.
-   - Attach the ACM certificate to the ALB's port 443 listener to terminate SSL securely.
+1. Go to → **https://cloud.qdrant.io** → Sign up (free, no card)
+2. Create a **Free** cluster (1 GB, region: `us-east-1` or `eu-west`)
+3. Copy your:
+   - **Cluster URL**: `https://xxxx.us-east.aws.cloud.qdrant.io`
+   - **API Key** (from the dashboard → API Keys tab)
 
 ---
 
-## 🔒 3. Production Post-Deployment Verification
+## Step 3: Deploy on Render
 
-After successful deployment, run these checks to verify integrity:
+### 3a. Create a New Web Service
 
-1. **Verify Health Endpoint**:
-   ```bash
-   curl https://your-domain.com/health
-   ```
-   *Expected response:* `{"status":"healthy","qdrant":"connected","ollama":"connected"}`
+1. Go to → **https://dashboard.render.com** → **New → Web Service**
+2. Connect your GitHub repository: `industrial-rag-assistant`
+3. Configure:
 
-2. **Verify Security Block (No API Key)**:
-   ```bash
-   curl -I -X POST https://your-domain.com/query -H "Content-Type: application/json" -d '{"question":"test"}'
-   ```
-   *Expected response:* `HTTP/1.1 401 Unauthorized`
+| Setting | Value |
+|---------|-------|
+| **Name** | `industrial-rag-assistant` |
+| **Runtime** | `Docker` |
+| **Dockerfile Path** | `./Dockerfile` |
+| **Instance Type** | `Free` |
+| **Health Check Path** | `/health` |
 
-3. **Verify Authorized Query**:
-   ```bash
-   curl -X POST https://your-domain.com/query \
-     -H "Content-Type: application/json" \
-     -H "X-API-Key: your-production-key" \
-     -d '{"question":"What is the regulation method for compressors > 5 kW?"}'
-   ```
-   *Expected response:* Valid JSON with answer, sources, and latency.
+### 3b. Set Environment Variables
+
+In the Render dashboard → **Environment** tab, add:
+
+| Key | Value |
+|-----|-------|
+| `API_KEY` | Generate a strong key: `openssl rand -hex 32` |
+| `QDRANT_HOST` | Your Qdrant Cloud URL (without `https://`) |
+| `QDRANT_PORT` | `6333` |
+| `QDRANT_API_KEY` | Your Qdrant Cloud API key |
+| `OLLAMA_BASE_URL` | Your Ollama endpoint (see note below) |
+| `ALLOWED_ORIGINS` | `*` (or your frontend URL) |
+| `PYTHONUNBUFFERED` | `1` |
+
+> **Note on Ollama**: Render free tier cannot run Ollama (requires GPU/high RAM).
+> Options:
+> - Use [Groq API](https://groq.com) (free, fast) — see `src/generation/llm_client.py`
+> - Run Ollama locally and expose via [ngrok](https://ngrok.com) for testing
+> - Use a [Modal.com](https://modal.com) Ollama endpoint (free credits)
+
+### 3c. Deploy
+
+Click **Create Web Service**. Render will:
+1. Pull your GitHub repo
+2. Build the Docker image
+3. Run health checks on `/health`
+4. Give you a public URL: `https://industrial-rag-assistant.onrender.com`
+
+---
+
+## Step 4: Verify Deployment
+
+```bash
+# Health check
+curl https://industrial-rag-assistant.onrender.com/health
+
+# Expected (services degraded if Ollama not configured):
+# {"status": "degraded", "qdrant": "connected", "ollama": "disconnected: ..."}
+
+# Test query (replace YOUR_API_KEY)
+curl -X POST https://industrial-rag-assistant.onrender.com/query \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -d '{"question": "What are the maintenance intervals for the compressor?"}'
+```
+
+---
+
+## Step 5: Ingest Documents
+
+```bash
+curl -X POST https://industrial-rag-assistant.onrender.com/ingest \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -F "file=@data/raw/your_manual.pdf"
+```
+
+---
+
+## Local Development with Docker Compose
+
+For full local stack (Qdrant + Ollama + FastAPI):
+
+```bash
+# Start all services
+docker-compose up --build
+
+# Pull Ollama model (run once)
+docker exec -it ollama_prod ollama pull mistral:7b-instruct
+
+# Test locally
+curl http://localhost/health
+```
+
+---
+
+## Render Deployment Checklist
+
+- [ ] `render.yaml` committed to repo root
+- [ ] GitHub repo connected to Render
+- [ ] `API_KEY` set in Render environment vars
+- [ ] `QDRANT_HOST` set to Qdrant Cloud URL
+- [ ] Health check path set to `/health`
+- [ ] Deployment successful (green status in dashboard)
+- [ ] `/health` endpoint returns 200 OK
+
+---
+
+## Cost Summary
+
+| Service | Tier | Cost |
+|---------|------|------|
+| Render Web Service | Free | $0/month |
+| Qdrant Cloud | Free (1GB) | $0/month |
+| Groq LLM API | Free (rate limited) | $0/month |
+| **Total** | | **$0/month** |
