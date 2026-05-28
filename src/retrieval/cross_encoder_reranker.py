@@ -3,6 +3,13 @@ from typing import List, Optional
 from llama_index.core.postprocessor.types import BaseNodePostprocessor
 from llama_index.core.schema import NodeWithScore, QueryBundle
 
+# Optional import — not available in CI (no torch).
+# Tests patch this module-level name before instantiation.
+try:
+    from sentence_transformers import CrossEncoder
+except ImportError:
+    CrossEncoder = None  # type: ignore[assignment, misc]
+
 logger = logging.getLogger(__name__)
 
 
@@ -11,7 +18,7 @@ class CrossEncoderReranker(BaseNodePostprocessor):
 
     model_name: str
     top_n: int
-    _model: object  # CrossEncoder — lazy imported to avoid requiring torch in CI
+    _model: object  # CrossEncoder instance
 
     def __init__(
         self,
@@ -19,11 +26,16 @@ class CrossEncoderReranker(BaseNodePostprocessor):
         top_n: int = 3,
     ):
         super().__init__(model_name=model_name, top_n=top_n)
-        # Lazy import: avoids pulling PyTorch at module load time (important for CI mocking)
-        from sentence_transformers import CrossEncoder  # noqa: PLC0415
-
+        # CrossEncoder is the module-level name — patchable in tests even when
+        # sentence-transformers is not installed (CI environment).
+        encoder_cls = CrossEncoder
+        if encoder_cls is None:
+            raise ImportError(
+                "sentence-transformers is required for CrossEncoderReranker. "
+                "Install with: pip install sentence-transformers"
+            )
         # Use object.__setattr__ to bypass Pydantic field validation
-        object.__setattr__(self, "_model", CrossEncoder(model_name))
+        object.__setattr__(self, "_model", encoder_cls(model_name))
         logger.info(
             f"CrossEncoderReranker successfully loaded with model: {model_name}"
         )

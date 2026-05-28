@@ -6,9 +6,10 @@ def test_cross_encoder_reranker_predict():
     mock_model = MagicMock()
     mock_model.predict.return_value = [0.1, 0.9]
 
-    # Patch at the sentence_transformers source (lazy import inside __init__)
+    # Patch the module-level CrossEncoder name — works even when
+    # sentence-transformers is NOT installed (CI without torch).
     with patch(
-        "sentence_transformers.CrossEncoder",
+        "src.retrieval.cross_encoder_reranker.CrossEncoder",
         return_value=mock_model,
     ):
         reranker = CrossEncoderReranker(model_name="dummy_model", top_n=1)
