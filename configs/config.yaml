@@ -19,7 +19,7 @@ llm:
   request_timeout: 45.0
   additional_kwargs:
     num_predict: 128
-    num_ctx: 512
+    num_ctx: 2048
     top_k: 10
     top_p: 0.9
     repeat_penalty: 1.1
@@ -40,5 +40,5 @@ evaluation:
   context_recall_threshold: 0.65
 
 mlflow:
-  tracking_uri: mlruns
+  tracking_uri: "sqlite:///mlflow.db"
   experiment_name: rag-experiments

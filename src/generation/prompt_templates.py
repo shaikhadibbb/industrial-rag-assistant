@@ -8,11 +8,9 @@ User Question:
 {query_str}
 
 Instructions:
-1. If the answer is in the context, provide it clearly.
-2. Cite sources as [Source: filename, Page: N] where N is the page number.
-3. If the answer is not in the context, say "I don't have enough information in the provided documents to answer this accurately."
-4. Do not use any outside knowledge.
-5. If this is a follow-up, consider the previous context if provided.
+1. Cite source document and page for every factual claim. Use the exact citation format [Source: filename, Page: N] where N is the page number.
+2. If uncertain or if the answer is not in the context, say "I don't have enough information." Do not attempt to make up an answer.
+3. Self-Check: Review your answer against the provided context. Remove any claims not supported by the context. Do not use any outside knowledge.
 
 Answer: [/INST]
 """
@@ -29,10 +27,12 @@ Follow-up Question:
 
 Instructions:
 1. Use both the chat history and new context to answer.
-2. Cite sources accurately.
-3. If context is insufficient, state it.
+2. Cite source document and page for every factual claim. Use the exact citation format [Source: filename, Page: N].
+3. If uncertain or if the context is insufficient, say "I don't have enough information."
+4. Self-Check: Review your answer against the provided context. Remove any claims not supported by the context.
 
 Answer: [/INST]
 """
 
-FALLBACK_PROMPT = "I don't have enough information in the provided documents to answer this accurately."
+FALLBACK_PROMPT = "I don't have enough information."
+

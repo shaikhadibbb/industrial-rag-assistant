@@ -43,15 +43,72 @@ class OllamaLLM:
             logger.error(f"Failed to connect to Ollama: {e}")
 
     @retry(
-        stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10)
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=4, max=10),
     )
-    def complete(self, prompt: str):
-        """Completes a prompt with retry logic and latency logging."""
+    def complete(self, prompt: str, check_consistency: bool = False):
+        """Completes a prompt with optional consistency check, retry logic and latency logging."""
+        if not check_consistency:
+            start_time = time.time()
+            response = self.llm.complete(prompt)
+            duration = time.time() - start_time
+            logger.info(f"LLM Response received in {duration:.2f}s")
+            return response
+
+        logger.info(
+            "Running answer consistency check (generating 3 answers)..."
+        )
         start_time = time.time()
-        response = self.llm.complete(prompt)
+
+        res1 = self.llm.complete(prompt)
+        ans1 = str(res1).strip()
+        ans2 = str(self.llm.complete(prompt)).strip()
+        ans3 = str(self.llm.complete(prompt)).strip()
+
         duration = time.time() - start_time
-        logger.info(f"LLM Response received in {duration:.2f}s")
-        return response
+        logger.info(f"Generated 3 answers in {duration:.2f}s")
+
+        try:
+            from src.retrieval.embedder import BGEEmbedder
+            import numpy as np
+
+            embed_model = BGEEmbedder().get_embedding_model()
+            emb1 = np.array(embed_model.get_text_embedding(ans1))
+            emb2 = np.array(embed_model.get_text_embedding(ans2))
+            emb3 = np.array(embed_model.get_text_embedding(ans3))
+
+            def cos_sim(v1, v2):
+                norm1, norm2 = np.linalg.norm(v1), np.linalg.norm(v2)
+                if norm1 == 0 or norm2 == 0:
+                    return 0.0
+                return float(np.dot(v1, v2) / (norm1 * norm2))
+
+            sim12 = cos_sim(emb1, emb2)
+            sim23 = cos_sim(emb2, emb3)
+            sim13 = cos_sim(emb1, emb3)
+
+            avg_sim = (sim12 + sim23 + sim13) / 3
+            variance = 1.0 - avg_sim
+
+            logger.info(
+                f"Answer semantic consistency: {avg_sim:.4f} (variance: {variance:.4f})"
+            )
+
+            threshold = 0.15  # 85% similarity threshold
+            import mlflow
+
+            if variance > threshold:
+                logger.warning(
+                    f"⚠️ High answer variance detected ({variance:.4f} > {threshold})! "
+                    f"A1: '{ans1[:80]}...' | A2: '{ans2[:80]}...' | A3: '{ans3[:80]}...'"
+                )
+                if mlflow.active_run():
+                    mlflow.log_metric("answer_variance", variance)
+
+        except Exception as e:
+            logger.error(f"Failed to calculate answer consistency: {e}")
+
+        return res1
 
     def get_llm(self):
         """Returns the LlamaIndex LLM object."""
