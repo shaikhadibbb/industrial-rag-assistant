@@ -2,18 +2,30 @@ services:
   - type: web
     name: industrial-rag-assistant
     runtime: docker
-    dockerfilePath: ./Dockerfile
+    dockerfilePath: ./Dockerfile.render
     healthCheckPath: /health
     envVars:
+      # Qdrant Cloud
       - key: QDRANT_HOST
         value: beb0c63d-8c8c-43ce-8eac-14e790988d58.us-west-2-0.aws.cloud.qdrant.io
       - key: QDRANT_PORT
         value: "6333"
-      - key: ALLOWED_ORIGINS
-        value: "*"
+      # Memory optimisation flags
+      - key: USE_FASTEMBED
+        value: "true"
+      - key: SKIP_RERANKER
+        value: "true"
+      - key: OMP_NUM_THREADS
+        value: "1"
+      - key: NUMEXPR_MAX_THREADS
+        value: "1"
+      - key: TOKENIZERS_PARALLELISM
+        value: "false"
       - key: PYTHONUNBUFFERED
         value: "1"
-      # Secrets — set these manually in the Render dashboard (not stored in git)
+      - key: ALLOWED_ORIGINS
+        value: "*"
+      # Secrets — set manually in Render dashboard (sync:false = not stored in git)
       - key: API_KEY
         sync: false
       - key: QDRANT_API_KEY

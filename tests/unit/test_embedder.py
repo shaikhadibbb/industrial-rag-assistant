@@ -1,15 +1,16 @@
 from unittest.mock import MagicMock, patch
 
-with patch("llama_index.embeddings.huggingface.HuggingFaceEmbedding") as mock_hf:
-    # Import after patch to prevent early load
-    from src.retrieval.embedder import BGEEmbedder
-
 
 def test_embedder_initialization():
     mock_model = MagicMock()
+    # Patch at the source — embedder.py imports HuggingFaceEmbedding lazily
+    # inside _load_huggingface(), so we patch the library's module directly.
     with patch(
-        "src.retrieval.embedder.HuggingFaceEmbedding", return_value=mock_model
+        "llama_index.embeddings.huggingface.HuggingFaceEmbedding",
+        return_value=mock_model,
     ) as mock_hf_class:
+        from src.retrieval.embedder import BGEEmbedder
+
         embedder = BGEEmbedder()
         model = embedder.get_embedding_model()
 

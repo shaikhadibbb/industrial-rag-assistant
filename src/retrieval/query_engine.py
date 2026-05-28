@@ -1,4 +1,5 @@
 import time
+import os
 import logging
 import yaml
 import threading
@@ -133,12 +134,23 @@ class RAGQueryEngine:
 
         self.hyde = HyDEQueryTransform(llm=self.llm, include_original=True)
         self.deduplicator = DeduplicationPostprocessor(similarity_threshold=0.85)
-        from src.retrieval.cross_encoder_reranker import CrossEncoderReranker
 
-        self.reranker = CrossEncoderReranker(
-            model_name=self.config["retrieval"]["reranker_model"],
-            top_n=self.config["retrieval"]["reranker_top_n"],
-        )
+        # SKIP_RERANKER=true on Render free tier (512MB) — CrossEncoder needs PyTorch (~300MB)
+        skip_reranker = os.getenv("SKIP_RERANKER", "false").lower() == "true"
+        if skip_reranker:
+            logger.info(
+                "SKIP_RERANKER=true — using score-based ranking only (memory optimised mode)."
+            )
+            self.reranker = None
+            postprocessors = [self.deduplicator]
+        else:
+            from src.retrieval.cross_encoder_reranker import CrossEncoderReranker
+
+            self.reranker = CrossEncoderReranker(
+                model_name=self.config["retrieval"]["reranker_model"],
+                top_n=self.config["retrieval"]["reranker_top_n"],
+            )
+            postprocessors = [self.deduplicator, self.reranker]
 
         # Build base engine retriever
         vector_retriever = self.index.as_retriever(
@@ -164,7 +176,7 @@ class RAGQueryEngine:
         base_engine = RetrieverQueryEngine.from_args(
             retriever=self.retriever,
             llm=self.llm,
-            node_postprocessors=[self.deduplicator, self.reranker],
+            node_postprocessors=postprocessors,
         )
 
         # Wrap with HyDE

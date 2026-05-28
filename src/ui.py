@@ -72,7 +72,7 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
 
     with gr.Row():
         with gr.Column(scale=4):
-            chatbot = gr.Chatbot(label="Maintenance Chat", type="messages")
+            chatbot = gr.Chatbot(label="Maintenance Chat")
             msg = gr.Textbox(label="Ask a question about industrial manuals...")
             clear = gr.Button("Clear Conversation")
 
