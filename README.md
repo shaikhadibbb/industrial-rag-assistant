@@ -1,6 +1,6 @@
 # Industrial RAG Knowledge Assistant
 
-**Status:** Deployed Prototype | [Live Demo API](https://industrial-rag-assistant.onrender.com/health) (Staging Placeholder)
+**Status:** Live Staging API | [Interactive Swagger Docs](https://industrial-rag-assistant.onrender.com/docs) | [Health Check](https://industrial-rag-assistant.onrender.com/health)
 - **RAGAS Faithfulness:** **0.724** (Target: >0.70 ✅ | Baseline: 0.583)
 - **RAGAS Context Recall:** **0.712** (Target: >0.70 ✅ | Baseline: 0.554)
 - **p95 Latency:** **~1.85s** (Target: <2.0s ✅ | Baseline: ~4.5s) *[with LRU-TTL caching]*
@@ -36,12 +36,12 @@ We hold ourselves to strict, transparent evaluations using the RAGAS framework. 
 - **Performance & Async Processing:** Async query endpoints, Server-Sent Events (SSE) token streaming (`/query/stream`), and connection pooling.
 - **Performance Caching:** LRU-TTL query cache (maxsize=1000, TTL=1hr) and Patched query embedding cache to prevent duplicate calculations.
 - **Production Hardening:** Docker containerization, secure Nginx reverse proxy configuration, API key validation (`X-API-Key`), and thread-safe sliding-window rate-limiting (10 req/min).
-- **Test Suite:** Comprehensive unit and integration testing infrastructure (15 automated tests passing cleanly).
+- **Staging Cloud Deployment:** Multi-stage containerized stack deployed live on Render free-tier with FastEmbed model pre-baked to eliminate peak RAM spikes.
+- **Technical Writing:** Detailed architectural deep-dive published live on [Dev.to](https://dev.to/shaikhadibbb/how-i-rescued-a-rag-assistant-from-memory-leaks-and-got-it-running-on-a-512mb-ram-free-tier-4co9).
+- **Test Suite:** Comprehensive unit and integration testing infrastructure (15 automated tests passing cleanly on GitHub CI).
 
 ### Future Roadmap Polish (To Be Managed)
 - **GitHub Stars Outreach:** Aiming for 10+ organic developer stars.
-- **Production Staging Deployments:** Actively staging containerized stacks on cloud instances.
-- **Technical Writing:** Publishing `docs/blog_post.md` to Dev.to/Medium to share industrial RAG lessons.
 
 ---
 
