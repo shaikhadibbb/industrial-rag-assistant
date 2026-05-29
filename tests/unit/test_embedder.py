@@ -1,5 +1,4 @@
 from unittest.mock import MagicMock, patch
-import sys
 
 
 def test_embedder_initialization():
@@ -15,7 +14,10 @@ def test_embedder_initialization():
         "sys.modules", {"llama_index.embeddings.huggingface": mock_hf_module}
     ):
         import llama_index.embeddings
-        with patch.object(llama_index.embeddings, "huggingface", mock_hf_module, create=True):
+
+        with patch.object(
+            llama_index.embeddings, "huggingface", mock_hf_module, create=True
+        ):
             from src.retrieval.embedder import BGEEmbedder
 
             embedder = BGEEmbedder()
@@ -24,4 +26,3 @@ def test_embedder_initialization():
             mock_hf_class.assert_called_once()
             assert model == mock_model
             assert embedder.model_name == "BAAI/bge-small-en-v1.5"
-
