@@ -161,7 +161,9 @@ def start_mlflow():
         import shutil
 
         mlflow_path = shutil.which("mlflow") or "mlflow"
-        subprocess.Popen([mlflow_path, "ui", "--port", "5001", "--host", "0.0.0.0"])  # nosec B104
+        subprocess.Popen(
+            [mlflow_path, "ui", "--port", "5001", "--host", "0.0.0.0"]
+        )  # nosec B104
     except Exception as e:
         logger.error(f"Failed to start MLflow UI: {e}")
 
