@@ -1,40 +1,38 @@
 # Production & Local Dev Direct Dependencies
-# Optimized to exclude massive unused third-party frameworks (e.g. LangChain, Celery, Flask, AsyncSSH)
+# Optimized with flexible pins to prevent cross-environment version conflicts
 
 # LlamaIndex Core
-llama-index-core==0.10.57
-llama-index-llms-ollama==0.2.2
-llama-index-llms-groq==0.1.3
-llama-index-vector-stores-qdrant==0.2.17
+llama-index-core>=0.10.57
+llama-index-llms-ollama>=0.2.2
+llama-index-llms-groq>=0.1.3
+llama-index-vector-stores-qdrant>=0.2.17
 
-# Embeddings & Reranking
-llama-index-embeddings-fastembed==0.1.4
-fastembed==0.2.7
-llama-index-embeddings-huggingface==0.2.3
-sentence-transformers==5.5.1
+# Embeddings
+llama-index-embeddings-fastembed>=0.1.4
+fastembed>=0.2.7
 
 # Document Ingestion & Search
-PyMuPDF==1.27.2.3
-pytesseract==0.3.10
-pillow==12.2.0
-llama-index-retrievers-bm25==0.1.5
-rank-bm25==0.2.2
+PyMuPDF>=1.24.0
+pytesseract>=0.3.10
+pillow>=10.0.0
+llama-index-retrievers-bm25>=0.1.5
+rank-bm25>=0.2.2
 
 # DB Client
-qdrant-client==1.18.0
+qdrant-client>=1.18.0
 
 # API Framework & UI
-fastapi==0.136.3
-uvicorn==0.48.0
-pydantic==2.13.4
-pyyaml==6.0.3
-httpx==0.28.1
-python-multipart==0.0.29
-tenacity==8.5.0
-gradio==6.15.1
+fastapi>=0.110.0
+uvicorn>=0.29.0
+pydantic>=2.7.0
+pyyaml>=6.0.0
+httpx>=0.27.0
+python-multipart>=0.0.9
+tenacity>=8.2.0
+gradio>=4.0.0
 
 # Observability & Metrics
-mlflow-skinny==3.12.0
-prometheus-client==0.20.0
-evidently==0.4.20
-numpy==1.26.4
+mlflow-skinny>=2.10.0
+prometheus-client>=0.20.0
+evidently>=0.4.0
+numpy>=1.24.0
