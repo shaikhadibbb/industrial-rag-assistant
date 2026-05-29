@@ -17,6 +17,8 @@ build/
 .mypy_cache/
 .cache/
 mlflow.db
+*.db
+
 
 CREDENTIALS.md
 .coverage
