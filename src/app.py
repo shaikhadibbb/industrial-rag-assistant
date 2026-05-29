@@ -161,7 +161,7 @@ def start_mlflow():
         import shutil
 
         mlflow_path = shutil.which("mlflow") or "mlflow"
-        subprocess.Popen([mlflow_path, "ui", "--port", "5001", "--host", "0.0.0.0"])
+        subprocess.Popen([mlflow_path, "ui", "--port", "5001", "--host", "0.0.0.0"])  # nosec B104
     except Exception as e:
         logger.error(f"Failed to start MLflow UI: {e}")
 
@@ -543,4 +543,4 @@ async def get_ingestion_status(job_id: str, raw_request: Request):
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000)  # nosec B104

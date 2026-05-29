@@ -6,7 +6,7 @@ import sys
 logger = logging.getLogger(__name__)
 
 
-def check_quality(config_path: str = "configs/config.yaml"):
+def check_quality(config_path: str = "configs/config.yaml") -> None:
     """Checks latest MLflow metrics against thresholds."""
     with open(config_path, "r") as f:
         config = yaml.safe_load(f)

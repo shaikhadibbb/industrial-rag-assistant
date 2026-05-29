@@ -25,7 +25,7 @@ class BGEEmbedder:
         else:
             self._load_huggingface()
 
-    def _load_fastembed(self):
+    def _load_fastembed(self) -> None:
         """Load via FastEmbed — ONNX-based, no PyTorch, fits in 512MB RAM."""
         logger.info(f"Loading embedding model via FastEmbed (ONNX): {self.model_name}")
         from llama_index.embeddings.fastembed import FastEmbedEmbedding
@@ -35,10 +35,17 @@ class BGEEmbedder:
             cache_dir="./.cache/fastembed",
         )
 
-    def _load_huggingface(self):
+    def _load_huggingface(self) -> None:
         """Load via HuggingFace — full PyTorch model, for local dev only."""
         logger.info(f"Loading embedding model via HuggingFace: {self.model_name}")
         from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+
+        # Monkeypatch Pydantic v2 field defaults to resolve library-level ValidationError
+        if hasattr(HuggingFaceEmbedding, "model_fields"):
+            HuggingFaceEmbedding.model_fields["cache_folder"].default = None
+            HuggingFaceEmbedding.model_fields["query_instruction"].default = None
+            HuggingFaceEmbedding.model_fields["text_instruction"].default = None
+            HuggingFaceEmbedding.model_rebuild(force=True)
 
         self.embed_model = HuggingFaceEmbedding(
             model_name=self.model_name,
@@ -46,6 +53,6 @@ class BGEEmbedder:
             cache_folder="./.cache/huggingface",
         )
 
-    def get_embedding_model(self):
+    def get_embedding_model(self) -> object:
         """Returns the LlamaIndex compatible embedding model."""
         return self.embed_model

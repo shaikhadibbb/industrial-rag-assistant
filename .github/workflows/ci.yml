@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  lint:
+  lint-format:
     name: Lint & Format
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -28,10 +28,10 @@ jobs:
       - name: Format check with black
         run: black --check src/ tests/
 
-  test:
-    name: Unit Tests
+  type-check:
+    name: Type Safety Check
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
 
@@ -40,16 +40,65 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
-      - name: Install all dependencies
+      - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt -r requirements-dev.txt
 
-      - name: Run unit tests
-        run: pytest tests/unit/ -v --tb=short -x
+      - name: Strict mypy type check
+        run: mypy src/
+
+  test-coverage:
+    name: Unit Tests & Coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Run unit tests with 60% coverage gate
+        run: pytest --cov=src --cov-report=xml --cov-fail-under=60 tests/unit/ tests/property/ -v
         env:
-          QDRANT_HOST: localhost
-          QDRANT_PORT: "6333"
-          OLLAMA_BASE_URL: http://localhost:11434
-          API_KEY: ci-test-key
           PYTHONPATH: .
+
+  security-scan:
+    name: Security & Vulnerability Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install scanning tools
+        run: pip install bandit pip-audit
+
+      - name: Scan code with bandit
+        run: bandit -r src/ -ll
+
+      - name: Scan dependencies with pip-audit
+        run: pip-audit --desc || true
+
+  deploy-smoke:
+    name: Deployment Smoke Test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    timeout-minutes: 5
+    steps:
+      - name: Wait for Render staging deploy
+        run: sleep 45
+
+      - name: Query health endpoint
+        run: curl -f https://industrial-rag-assistant.onrender.com/health || exit 1

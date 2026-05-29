@@ -13,7 +13,7 @@ def test_api_health_endpoint():
     json_data = response.json()
     assert "status" in json_data
     assert "qdrant" in json_data
-    assert "ollama" in json_data
+    assert "llm" in json_data
 
 
 @pytest.mark.skipif(

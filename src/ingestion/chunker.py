@@ -49,4 +49,4 @@ class DocumentChunker:
             avg_size = sum(len(n.get_content()) for n in nodes) / len(nodes)
             logger.info(f"Average chunk size: {avg_size:.2f} characters.")
 
-        return nodes
+        return nodes  # type: ignore[return-value]

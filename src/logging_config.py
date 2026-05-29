@@ -2,7 +2,7 @@ import logging.config
 import os
 
 
-def setup_logging():
+def setup_logging() -> None:
     logging_config = {
         "version": 1,
         "disable_existing_loggers": False,

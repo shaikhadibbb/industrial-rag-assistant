@@ -85,7 +85,7 @@ class PDFParser:
         return all_docs
 
 
-def main():
+def main() -> None:
     """Standalone test for PDFParser."""
     # Create a dummy pdf if none exists for testing or just log
     parser = PDFParser("data/raw")

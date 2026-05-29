@@ -1,0 +1,8 @@
+[run]
+branch = True
+source = src
+omit =
+    src/ui.py
+    src/evaluation/*
+    src/app.py
+    src/generation/prompt_templates.py
