@@ -2,11 +2,11 @@
 
 [![CI Workflow](https://github.com/shaikhadibbb/industrial-rag-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/shaikhadibbb/industrial-rag-assistant/actions)
 [![Coverage](https://img.shields.io/badge/coverage-63%25-brightgreen)](https://github.com/shaikhadibbb/industrial-rag-assistant)
-[![Deploy Live](https://img.shields.io/badge/deploy-live-success?style=flat&logo=render&logoColor=white)](https://rag.shaikhadib.dev)
-[![Uptime Monitor](https://img.shields.io/badge/uptime-100%25-green?logo=uptimerobot)](https://status.shaikhadib.dev)
+[![Deploy Live](https://img.shields.io/badge/deploy-live-success?style=flat&logo=render&logoColor=white)](https://industrial-rag-assistant.onrender.com/docs)
+[![Uptime Monitor](https://img.shields.io/badge/uptime-100%25-green?logo=uptimerobot)](https://industrial-rag-assistant.onrender.com/health)
 [![GitHub Stars](https://img.shields.io/github/stars/shaikhadibbb/industrial-rag-assistant?style=social)](https://github.com/shaikhadibbb/industrial-rag-assistant)
 
-**Staging API Endpoint:** [https://rag.shaikhadib.dev/docs](https://rag.shaikhadib.dev/docs) | **Status Page:** [https://status.shaikhadib.dev](https://status.shaikhadib.dev)
+**Staging API Endpoint:** [https://industrial-rag-assistant.onrender.com/docs](https://industrial-rag-assistant.onrender.com/docs) | **Staging Health:** [https://industrial-rag-assistant.onrender.com/health](https://industrial-rag-assistant.onrender.com/health)
 
 - **RAGAS Faithfulness:** **0.724** (Target: >0.70 ✅ | Baseline: 0.583)
 - **RAGAS Context Recall:** **0.712** (Target: >0.70 ✅ | Baseline: 0.554)
@@ -49,13 +49,13 @@ Test the live staging API endpoints instantly using the standard `curl` commands
 ### 1. Endpoint Health Check
 Check system availability and backend services status:
 ```bash
-curl -f https://rag.shaikhadib.dev/health
+curl -f https://industrial-rag-assistant.onrender.com/health
 ```
 
 ### 2. Run a Maintenance Query
 Ask a complex troubleshooting question to retrieve source-grounded answers:
 ```bash
-curl -X POST https://rag.shaikhadib.dev/query \
+curl -X POST https://industrial-rag-assistant.onrender.com/query \
   -H "Content-Type: application/json" \
   -H "X-API-Key: YOUR_API_KEY" \
   -d '{"question": "How to replace a bearing in a CNC machine?"}'
@@ -64,7 +64,7 @@ curl -X POST https://rag.shaikhadib.dev/query \
 ### 3. Real-Time Token Streaming (SSE)
 Stream generated answers token-by-token for high-responsiveness applications:
 ```bash
-curl -N -X POST https://rag.shaikhadib.dev/query/stream \
+curl -N -X POST https://industrial-rag-assistant.onrender.com/query/stream \
   -H "Content-Type: application/json" \
   -H "X-API-Key: YOUR_API_KEY" \
   -d '{"question": "What is the maintenance schedule for hydraulic pumps?"}'
