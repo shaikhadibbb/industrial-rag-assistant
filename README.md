@@ -4,7 +4,7 @@
 [![Coverage](https://img.shields.io/badge/coverage-63%25-brightgreen)](https://github.com/shaikhadibbb/industrial-rag-assistant)
 [![Deploy Live](https://img.shields.io/badge/deploy-live-success?style=flat&logo=render&logoColor=white)](https://industrial-rag-assistant.onrender.com/docs)
 [![Uptime Monitor](https://img.shields.io/badge/uptime-100%25-green?logo=uptimerobot)](https://industrial-rag-assistant.onrender.com/health)
-[![GitHub Stars](https://img.shields.io/github/stars/shaikhadibbb/industrial-rag-assistant?style=social)](https://github.com/shaikhadibbb/industrial-rag-assistant)
+
 
 **Staging API Endpoint:** [https://industrial-rag-assistant.onrender.com/docs](https://industrial-rag-assistant.onrender.com/docs) | **Staging Health:** [https://industrial-rag-assistant.onrender.com/health](https://industrial-rag-assistant.onrender.com/health)
 
