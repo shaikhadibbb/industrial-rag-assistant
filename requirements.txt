@@ -233,7 +233,7 @@ ragas==0.4.3
 regex==2026.5.9
 requests==2.34.2
 requests-toolbelt==1.0.0
-rich==14.3.4
+rich==15.0.0
 rsa==4.9.1
 ruamel.yaml==0.19.1
 safehttpx==0.1.7
