@@ -9,7 +9,7 @@ llama-index-vector-stores-qdrant>=0.2.17
 
 # Embeddings
 llama-index-embeddings-fastembed>=0.1.4
-fastembed>=0.2.7
+fastembed>=0.8.0
 
 # Document Ingestion & Search
 PyMuPDF>=1.24.0
