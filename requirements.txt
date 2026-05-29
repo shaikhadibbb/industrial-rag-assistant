@@ -4,7 +4,7 @@
 # LlamaIndex Core
 llama-index-core>=0.10.57
 llama-index-llms-ollama>=0.2.2
-llama-index-llms-groq>=0.1.3
+llama-index-llms-groq>=0.5.0
 llama-index-vector-stores-qdrant>=0.2.17
 
 # Embeddings
