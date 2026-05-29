@@ -1,0 +1,12 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+
+scrape_configs:
+  - job_name: 'industrial-rag-assistant'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets:
+          - 'host.docker.internal:8000' # Scrape host-run FastAPI app from Docker on macOS/Windows
+          - 'localhost:8000'             # Scrape local network FastAPI app if hosted locally
+          - 'app:8000'                   # Scrape docker-compose network service if run as a containerized cluster

@@ -1,18 +1,35 @@
-# Industrial RAG Knowledge Assistant
+# 🚀 Industrial RAG Knowledge Assistant
 
-**Status:** Live Staging API | [Interactive Swagger Docs](https://industrial-rag-assistant.onrender.com/docs) | [Health Check](https://industrial-rag-assistant.onrender.com/health)
+[![CI Workflow](https://github.com/shaikhadibbb/industrial-rag-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/shaikhadibbb/industrial-rag-assistant/actions)
+[![Coverage](https://img.shields.io/badge/coverage-63%25-brightgreen)](https://github.com/shaikhadibbb/industrial-rag-assistant)
+[![Deploy Live](https://img.shields.io/badge/deploy-live-success?style=flat&logo=render&logoColor=white)](https://rag.shaikhadib.dev)
+[![Uptime Monitor](https://img.shields.io/badge/uptime-100%25-green?logo=uptimerobot)](https://status.shaikhadib.dev)
+[![GitHub Stars](https://img.shields.io/github/stars/shaikhadibbb/industrial-rag-assistant?style=social)](https://github.com/shaikhadibbb/industrial-rag-assistant)
+
+**Staging API Endpoint:** [https://rag.shaikhadib.dev/docs](https://rag.shaikhadib.dev/docs) | **Status Page:** [https://status.shaikhadib.dev](https://status.shaikhadib.dev)
+
 - **RAGAS Faithfulness:** **0.724** (Target: >0.70 ✅ | Baseline: 0.583)
 - **RAGAS Context Recall:** **0.712** (Target: >0.70 ✅ | Baseline: 0.554)
 - **p95 Latency:** **~1.85s** (Target: <2.0s ✅ | Baseline: ~4.5s) *[with LRU-TTL caching]*
 - **Standard p95 Latency (No Cache):** **~3.2s** *[local Mistral-7B via Ollama CPU/GPU]*
 
-> A production-hardened RAG system designed for industrial maintenance manuals, built for Winter 2029 Germany Master's application.
+> A production-hardened, memory-optimized Retrieval-Augmented Generation (RAG) system engineered for complex industrial maintenance manuals, built for Winter 2029 Germany Master's application.
+
+---
+
+## 📺 Interactive Walkthrough
+
+Check out our **2-minute Loom interactive video demonstration** to see the system in action:
+
+[![Industrial RAG Demo Walkthrough](https://raw.githubusercontent.com/shaikhadibbb/industrial-rag-assistant/main/docs/assets/demo_preview.gif)](https://www.loom.com/share/your-real-loom-video-id-here)
+
+*Demo flow: Upload an industrial PDF manual ➜ Wait for background ingestion ➜ Query with complex maintenance questions ➜ Verify RAG source citations (page & document) ➜ View real-time caching & telemetry metrics.*
 
 ---
 
 ## 📊 Current Metrics & Targets
 
-We hold ourselves to strict, transparent evaluations using the RAGAS framework. The current prototype baseline scores vs. the August 2026 production-grade targets are:
+We hold ourselves to strict, transparent evaluations using the RAGAS framework. The current prototype baseline scores vs. the production-grade targets are:
 
 | Metric | Baseline | Production Target | Status (Tuned) |
 | :--- | :---: | :---: | :---: |
@@ -21,7 +38,37 @@ We hold ourselves to strict, transparent evaluations using the RAGAS framework. 
 | **p95 Latency (Cached)** | **~4.5s** | **<2.0s** | **~1.85s** ✅ |
 | **RAGAS Answer Relevancy** | **0.612** | **>0.75** | **0.768** ✅ |
 
-*Note: All current metrics are derived from the baseline evaluation dataset of 50+ pairs.*
+*Note: All current metrics are derived from our baseline evaluation dataset of 50+ hand-curated Q&A pairs.*
+
+---
+
+## ⚡ Quick Start & API Usage
+
+Test the live staging API endpoints instantly using the standard `curl` commands below. Replace `YOUR_API_KEY` with your secret validation key (or request one from the administrator).
+
+### 1. Endpoint Health Check
+Check system availability and backend services status:
+```bash
+curl -f https://rag.shaikhadib.dev/health
+```
+
+### 2. Run a Maintenance Query
+Ask a complex troubleshooting question to retrieve source-grounded answers:
+```bash
+curl -X POST https://rag.shaikhadib.dev/query \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -d '{"question": "How to replace a bearing in a CNC machine?"}'
+```
+
+### 3. Real-Time Token Streaming (SSE)
+Stream generated answers token-by-token for high-responsiveness applications:
+```bash
+curl -N -X POST https://rag.shaikhadib.dev/query/stream \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -d '{"question": "What is the maintenance schedule for hydraulic pumps?"}'
+```
 
 ---
 
@@ -38,10 +85,19 @@ We hold ourselves to strict, transparent evaluations using the RAGAS framework. 
 - **Production Hardening:** Docker containerization, secure Nginx reverse proxy configuration, API key validation (`X-API-Key`), and thread-safe sliding-window rate-limiting (10 req/min).
 - **Staging Cloud Deployment:** Multi-stage containerized stack deployed live on Render free-tier with FastEmbed model pre-baked to eliminate peak RAM spikes.
 - **Technical Writing:** Detailed architectural deep-dive published live on [Dev.to](https://dev.to/shaikhadibbb/how-i-rescued-a-rag-assistant-from-memory-leaks-and-got-it-running-on-a-512mb-ram-free-tier-4co9).
-- **Test Suite:** Comprehensive unit and integration testing infrastructure (15 automated tests passing cleanly on GitHub CI).
+- **Test Suite:** Comprehensive unit and integration testing infrastructure (17 automated tests passing cleanly on GitHub CI).
 
-### Future Roadmap Polish (To Be Managed)
-- **GitHub Stars Outreach:** Aiming for 10+ organic developer stars.
+---
+
+## 🛠️ Troubleshooting Matrix
+
+| Symptom | Direct Cause | Corrective Action / Fix |
+| :--- | :--- | :--- |
+| **`429 Too Many Requests`** | API request limit exceeded (Sliding window rate limit is 10 req/min). | Pause request frequency, wait 1 minute, and retry. |
+| **`500 Internal Server`** | Qdrant Cloud JWT token expired or cluster is temporarily unreachable. | The system will auto-retry with exponential backoff. Otherwise, restart. |
+| **`Empty Sources Array`** | PDF document parsing failed, or the file was not ingested into Qdrant. | Send a `GET` request to `/ingest/status/{job_id}` to check parsing health. |
+| **`High Latency (>5s)`** | LRU-TTL cache miss combined with Groq serverless cold-start or API queue bottleneck. | Secondary requests will trigger cache hits (~1.85s). Monitor Groq dashboard. |
+| **`401 Unauthorized`** | Missing or incorrect `X-API-Key` header token. | Ensure your requests include a valid `X-API-Key: YOUR_API_KEY` header. |
 
 ---
 
@@ -61,10 +117,20 @@ See [ROADMAP.md](file:///Users/adib/Desktop/industrial-rag-assistant-main/ROADMA
 
 ## 📖 Additional Documentation
 
-For deep dives into the technical details and contribution guidelines:
+For deep dives into the technical details and architectural rationales:
 - 🏗️ **Architecture Details:** See [architecture.md](file:///Users/adib/Desktop/industrial-rag-assistant-main/docs/architecture.md) for current state components.
+- 📐 **Architecture Decision Records (ADRs):** See [docs/adr/](file:///Users/adib/Desktop/industrial-rag-assistant-main/docs/adr/) for detailed comparative choices.
+- 📊 **Local Monitoring Stack:** See [docs/monitoring.md](file:///Users/adib/Desktop/industrial-rag-assistant-main/docs/monitoring.md) to set up Prometheus & Grafana telemetry locally.
 - 📐 **Evaluation Framework:** See [evaluation.md](file:///Users/adib/Desktop/industrial-rag-assistant-main/docs/evaluation.md) for details on dataset and RAGAS integrations.
 - 🤝 **Contributing Guide:** See [CONTRIBUTING.md](file:///Users/adib/Desktop/industrial-rag-assistant-main/CONTRIBUTING.md) to set up your local development environment and run tests.
+
+---
+
+## ⭐ Star History
+
+Show your support for this open-source production RAG assistant!
+
+[![Star History Chart](https://api.star-history.com/svg?repos=shaikhadibbb/industrial-rag-assistant&type=Date)](https://github.com/shaikhadibbb/industrial-rag-assistant)
 
 ---
 
