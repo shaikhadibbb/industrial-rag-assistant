@@ -28,7 +28,9 @@ def test_keyword_retriever_successful_initialization():
 
     mock_bm25_instance = MagicMock()
 
-    with patch("src.retrieval.keyword_retriever.QdrantStore") as mock_store_class, patch(
+    with patch(
+        "src.retrieval.keyword_retriever.QdrantStore"
+    ) as mock_store_class, patch(
         "llama_index.retrievers.bm25.BM25Retriever.from_defaults",
         return_value=mock_bm25_instance,
     ) as mock_from_defaults:

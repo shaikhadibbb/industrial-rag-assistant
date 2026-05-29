@@ -45,7 +45,7 @@ class BGEEmbedder:
             HuggingFaceEmbedding.model_fields["cache_folder"].default = None
             HuggingFaceEmbedding.model_fields["query_instruction"].default = None
             HuggingFaceEmbedding.model_fields["text_instruction"].default = None
-            HuggingFaceEmbedding.model_rebuild(force=True)
+            HuggingFaceEmbedding.model_rebuild(force=True)  # type: ignore[attr-defined]
 
         self.embed_model = HuggingFaceEmbedding(
             model_name=self.model_name,

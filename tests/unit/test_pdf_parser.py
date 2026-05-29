@@ -27,7 +27,7 @@ def test_parse_pdf():
 def test_parse_pdf_ocr_fallback():
     mock_page = MagicMock()
     mock_page.get_text.return_value = ""  # Empty text triggers OCR
-    
+
     mock_pixmap = MagicMock()
     mock_pixmap.tobytes.return_value = b"fake_png_bytes"
     mock_page.get_pixmap.return_value = mock_pixmap

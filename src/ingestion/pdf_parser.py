@@ -66,7 +66,7 @@ class PDFParser:
                     "total_pages": total_pages,
                 }
 
-                documents.append(Document(text=text, metadata=metadata))
+                documents.append(Document(text=text, metadata=metadata))  # type: ignore[call-arg]
 
             doc.close()
             logger.info(f"Successfully parsed {filename} with {total_pages} pages.")

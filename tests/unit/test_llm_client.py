@@ -43,9 +43,9 @@ def test_llm_client_complete_consistency():
         0.3,
     ]
 
-    with patch("src.generation.llm_client.Ollama", return_value=mock_ollama_instance), patch(
-        "src.retrieval.embedder.BGEEmbedder", return_value=mock_embed_instance
-    ):
+    with patch(
+        "src.generation.llm_client.Ollama", return_value=mock_ollama_instance
+    ), patch("src.retrieval.embedder.BGEEmbedder", return_value=mock_embed_instance):
         llm_client = OllamaLLM()
         llm_client.llm = mock_ollama_instance
 
